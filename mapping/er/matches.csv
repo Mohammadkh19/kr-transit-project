@@ -1,0 +1,105 @@
+gtfs_stop,gtfs_name,osm_node,osm_name,metres,score,true_osm_node
+103,Gordon at Kortright southbound,11112550852,Gordon at Kortright southbound,0,0.998,11112550852
+104,Gordon at Harts southbound,3470674895,Gordon at Harts southbound,1,0.996,3470674895
+105,Gordon at Landsdown southbound,7531653659,Gordon at Landsdown southbound,1,0.996,7531653659
+106,Gordon at Edinburgh southbound,2313748219,Gordon at Edinburgh southbound,1,0.997,2313748219
+107,Edinburgh at Carrington westbound,2313748229,Edinburgh at Carrington westbound,0,0.999,2313748229
+108,Edinburgh at Rickson westbound,6173739472,Edinburgh at Rickson westbound,0,0.998,6173739472
+109,Edinburgh at Ginger northbound,2313748231,Edinburgh at Ginger northbound,1,0.995,2313748231
+110,Edinburgh at Rodgers northbound,2313748218,Edinburgh at Rodgers northbound,1,0.993,2313748218
+111,Edinburgh at Koch northbound,11115161541,Edinburgh at Koch northbound,1,0.996,11115161541
+112,Edinburgh at Laurelwood northbound,6754414682,Edinburgh at Laurelwood northbound,1,0.994,6754414682
+114,Stone at Scottsdale westbound,11115161539,Stone at Scottsdale westbound,1,0.996,11115161539
+115,176 Janefield northbound,11115161535,Janefield at Poppy northbound,1,0.87,11115161535
+116,Janefield at Mason northbound,11115161531,Janefield at Mason northbound,7,0.967,11115161531
+117,College at Vanier eastbound,7782874281,College at Vanier eastbound,1,0.995,7782874281
+118,College at Lynnwood eastbound,7780101048,College at Lynwood eastbound,0,0.989,7780101048
+119,College at Smith eastbound,11115161522,College at Smith eastbound,1,0.995,11115161522
+154,College at Caledonia westbound,11115330316,College at Caledonia westbound,1,0.995,11115330316
+155,College at Edinburgh westbound,7899398739,College at Edinburgh westbound,3,0.984,7899398739
+156,College at Centennial westbound,6175764840,College at Centennial westbound,1,0.994,6175764840
+157,165 Janefield southbound,7899398698,Janefield at Poppy southbound,6,0.848,7899398698
+158,Janefield at Scottsdale eastbound,7899398694,Janefield at Scottsdale eastbound,1,0.994,7899398694
+160,Stone at Stone Road Mall eastbound,11110144703,Stone at Stone Road Mall eastbound,1,0.995,11110144703
+162,Edinburgh at Ironwood southbound,6754414683,Edinburgh at Ironwood southbound,2,0.99,6754414683
+163,Edinburgh at Crowe southbound,6754414670,Edinburgh at Crowe southbound,1,0.994,6754414670
+164,Edinburgh at Rodgers southbound,2313752180,Edinburgh at Rodgers southbound,1,0.996,2313752180
+165,Edinburgh at Southcreek southbound,2313748233,Edinburgh at Southcreek southbound,1,0.996,2313748233
+166,Edinburgh at Rickson eastbound,6173739470,Edinburgh at Rickson eastbound,3,0.987,6173739470
+167,Edinburgh at Carrington eastbound,2313748230,Edinburgh at Carrington eastbound,1,0.994,2313748230
+168,Gordon at Edinburgh northbound,2313748224,Gordon at Edinburgh northbound,2,0.989,2313748224
+169,Gordon at Landsdown northbound,7531653658,Gordon at Landsdown northbound,1,0.996,7531653658
+170,Gordon at Harts northbound,7531653657,Gordon at Harts northbound,1,0.994,7531653657
+171,1030 Gordon northbound,3470674894,1030 Gordon northbound,1,0.997,3470674894
+173,Gordon at Hands northbound,6754414673,Gordon at Hands northbound,1,0.995,6754414673
+174,Gordon at Monticello northbound,6754320050,Gordon at Monticello northbound,1,0.996,6754320050
+203,Gordon at James southbound,9592742228,,24,0.381,9592742228
+204,Gordon at Dean southbound,9592734200,,5,0.477,9592734200
+233,Woodlawn at Woolwich eastbound,13913344883,Woodlawn at Woolwich eastbound,1,0.994,13913344883
+234,Woolwich at Marilyn southbound,,,,0,
+235,Woolwich at Evergreen Seniors Centre southbound,,,,0,
+236,Woolwich at Mac southbound,,,,0,
+237,Woolwich at Tiffany southbound,,,,0,
+238,Woolwich at London southbound,,,,0,
+254,Woolwich at London northbound,,,,0,
+255,Woolwich at Kerr northbound,,,,0,
+256,Woolwich at Powell northbound,,,,0,
+257,Woolwich at Earl northbound,14176118835,,42,0.288,
+258,Woolwich at Speedvale northbound,,,,0,
+259,Woolwich at Evergreen Seniors Centre northbound,,,,0,
+260,Woolwich at Marilyn northbound,,,,0,
+292,Gordon at McGilvray northbound,6754414675,Gordon at McGilvray northbound,1,0.996,6754414675
+294,Gordon at Dormie northbound,9592742230,,1,0.494,9592742230
+295,Gordon at Water northbound,9592712038,,10,0.452,9592712038
+352,Gordon at Wellington southbound,13913409825,Gordon at Wellington southbound,2,0.99,
+356,Gordon at College southbound,5412869449,Gordon at College southbound,4,0.982,5412869449
+501,Gordon at Nottingham southbound,12185189427,Gordon at Nottingham southbound,1,0.996,12185189427
+528,Gordon at Lowes northbound,2313748220,Gordon at Lowes northbound,6,0.968,2313748220
+529,Gordon at Heritage northbound,7531653662,Gordon at Heritage northbound,1,0.993,7531653662
+543,Gordon at Wellington northbound,13913409824,Gordon at Wellington northbound,3,0.986,
+544,Gordon at Nottingham northbound,13913409823,Gordon at Nottingham northbound,11,0.946,13913409823
+602,Gordon at Harvard southbound,7531653654,Gordon at Harvard southbound,1,0.994,7531653654
+621,Stone at Edinburgh eastbound,7780101039,Stone at Edinburgh eastbound,0,0.998,7780101039
+1101,Norfolk at Cork northbound,13913409817,Norfolk at Cork southbound,68,0.621,11526077437
+1505,Stone at Stone Road Mall westbound,7779650485,Stone at Stone Road Mall westbound,1,0.994,7779650485
+1602,Gordon at Water southbound,9592712039,,3,0.486,9592712039
+1606,Gordon at Stone southbound,7777172048,Gordon at Stone southbound,29,0.857,7777172048
+1612,Gordon at Arkell southbound,2313748223,Gordon at Arkell southbound,2,0.989,2313748223
+1613,Gordon at Vaughan southbound,7531653661,Gordon at Vaughan southbound,2,0.99,7531653661
+1614,Gordon at Lowes southbound,2313748221,Gordon at Lowes southbound,3,0.985,2313748221
+1615,Gordon at Clairfields southbound,7531653664,Gordon at Clairfields southbound,3,0.985,
+1633,Gosling at Clair northbound,13913409819,Gosling at Clair northbound,2,0.989,13913409819
+1634,Gosling at Gosling Gardens Park northbound,13913409820,Gosling at Gosling Gardens Park northbound,4,0.98,13913409820
+1635,Gosling at Clairfields northbound,13913373692,Clairfields at Gosling eastbound,23,0.678,5247441297
+1636,Gordon at Clairfields northbound,7531653663,Gordon at Clairfields northbound,1,0.995,7531653663
+1647,Gordon at Stone northbound,6754414674,Gordon at Stone northbound,1,0.996,6754414674
+1649,Gordon at College northbound,9592719365,,4,0.481,9592719365
+5608,Gordon at Arkell northbound,7531653660,Gordon at Arkell northbound,1,0.997,7531653660
+5709,Stone at Scottsdale eastbound,11110144699,Stone at Scottsdale eastbound,1,0.995,11110144699
+5807,Gordon at Kortright northbound,6754414672,Gordon at Kortright northbound,2,0.99,6754414672
+5832,University Centre South Loop Platform 5,7777172030,University Centre South Loop Platform 5,4,0.982,7777172030
+5834,University Centre North Loop Platform 10,7777172035,University Centre North Loop Platform 10,4,0.982,7777172035
+5838,University Centre North Loop Platform 9,7777172034,University Centre North Loop Platform 9,6,0.972,7777172034
+5847,University Centre North Loop Platform 11,7777172036,University Centre North Loop Platform 11,5,0.974,7777172036
+5848,University Centre North Loop Platform 12 A,7777172037,University Centre North Loop Platform 12,3,0.968,7777172037
+5852,Guelph Central Station Platform 7,3627877595,Guelph Central Station Platform 7,3,0.986,3627877595
+5857,Guelph Central Station Platform 18,3627877385,Guelph Central Station Platform 18,1,0.997,3627877385
+5895,749 Woolwich northbound,,,,0,
+5982,College at McGilvray eastbound,11115330312,College at University westbound,56,0.614,
+5985,Norfolk at Liverpool southbound,11142663389,Suffolk at Norfolk westbound,91,0.28,
+5986,College at University westbound,11115330312,College at University westbound,34,0.831,11115330312
+6003,Norfolk at Oxford northbound,13913396455,Paisley at Norfolk westbound,63,0.434,
+6043,Edinburgh at Thornberry southbound,6754414681,Edinburgh at Thornberry southbound,1,0.993,6754414681
+6046,Gordon at Royal City Park northbound,9592744519,,1,0.494,9592744519
+6055,Woodlawn Smart Centres northbound,8110369127,Woodlawn Smart Centres Platform 1,2,0.894,8110369127
+6058,Clair at Gosling westbound,13913409818,Clair at Gosling westbound,6,0.969,13913409818
+6065,1027 Gordon southbound,7531653656,1027 Gordon southbound,0,0.999,7531653656
+6067,Macdonell at Wilson eastbound,13913409822,Macdonell at Wilson westbound,22,0.872,9592813837
+6068,Macdonell at Wilson westbound,13913409822,Macdonell at Wilson westbound,1,0.994,
+6082,Norfolk at Suffolk northbound,11142663389,Suffolk at Norfolk westbound,69,0.4,
+6085,Gordon at Oak southbound,7531653655,Gordon at Oak southbound,2,0.991,7531653655
+6094,Norfolk at Cork southbound,13913409817,Norfolk at Cork southbound,2,0.988,13913409817
+6095,1750 Gordon southbound,12332601749,Gordon St. / Clair Rd. W,6,0.709,9592591637
+6097,Woolwich at Verney southbound,14176118835,,3,0.484,14176118835
+6218,Woolwich at Speedvale southbound,,,,0,
+6221,215 College westbound,13913409966,215 College westbound,3,0.986,13913409966
