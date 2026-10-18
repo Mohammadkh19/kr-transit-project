@@ -1,0 +1,16 @@
+python model/next_stop.py   (2026-10-19; torch 2.8.0+cpu, torch-geometric 2.8.0.post1)
+104 stops, 109 next-stop links (109 stop pairs); 15% of the pairs hidden per seed
+
+seed 0: 93 training links, 16 hidden links
+  distance   MRR 0.190  Hits@1 0.000  Hits@5 0.438
+  GraphSAGE  MRR 0.080  Hits@1 0.000  Hits@5 0.125
+seed 1: 93 training links, 16 hidden links
+  distance   MRR 0.159  Hits@1 0.000  Hits@5 0.188
+  GraphSAGE  MRR 0.256  Hits@1 0.188  Hits@5 0.375
+seed 2: 93 training links, 16 hidden links
+  distance   MRR 0.129  Hits@1 0.000  Hits@5 0.188
+  GraphSAGE  MRR 0.214  Hits@1 0.125  Hits@5 0.188
+
+mean and spread over the seeds:
+  distance   MRR 0.159 ± 0.025   Hits@1 0.000 ± 0.000
+  GraphSAGE  MRR 0.184 ± 0.075   Hits@1 0.104 ± 0.078
