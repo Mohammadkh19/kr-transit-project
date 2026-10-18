@@ -1,67 +1,70 @@
-# The test set: 12 questions the graph can answer and 3 it cannot.
-# The same layout as the TEXT2SPARQL questions files (dataset, questions,
-# question.en), so text2sparql-client can read it too; "gold" (the right
-# query) and "refuse" are this course's own fields, which it ignores.
-
 dataset:
-  id: https://ul.edu.lb/kr/brunel/
-  prefix: "PREFIX ul: <https://ul.edu.lb/kr/scm#>"
+  id: https://ul.edu.lb/kr/guelph/
+  prefix: |
+    PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 questions:
   - id: 1
-    question: {en: "How many orders are there, late orders included?"}
+    question: {en: "How many routes are there?"}
     gold: |
-      SELECT (COUNT(DISTINCT ?o) AS ?n) WHERE { { ?o a ul:Order } UNION { ?o a ul:LateOrder } }
+      SELECT (COUNT(?r) AS ?n) WHERE { ?r a gtfs:Route }
   - id: 2
-    question: {en: "How many late orders are there?"}
+    question: {en: "Which routes run on Sunday?"}
     gold: |
-      SELECT (COUNT(?o) AS ?n) WHERE { ?o a ul:LateOrder }
+      SELECT DISTINCT ?name WHERE { ?t gtfs:route/gtfs:shortName ?name ; gtfs:service/gtfs:serviceRule/gtfs:sunday true }
   - id: 3
-    question: {en: "Which carriers carry orders?"}
+    question: {en: "How many trips run on Sunday?"}
     gold: |
-      SELECT DISTINCT ?c WHERE { ?o ul:carriedBy ?c }
+      SELECT (COUNT(DISTINCT ?t) AS ?n) WHERE { ?t gtfs:service/gtfs:serviceRule/gtfs:sunday true }
   - id: 4
-    question: {en: "How many orders did carrier V44_3 carry?"}
+    question: {en: "How many different stops does route 99 serve?"}
     gold: |
-      SELECT (COUNT(?o) AS ?n) WHERE { ?o ul:carriedBy <https://ul.edu.lb/kr/id/carrier/brunel/V44_3> }
+      SELECT (COUNT(DISTINCT ?s) AS ?n) WHERE { ?st gtfs:stop ?s ; gtfs:trip/gtfs:route/gtfs:shortName "99" }
   - id: 5
-    question: {en: "How many products does plant PLANT03 make?"}
+    question: {en: "Which stops are served by more than one route?"}
     gold: |
-      SELECT (COUNT(?p) AS ?n) WHERE { <https://ul.edu.lb/kr/id/plant/brunel/PLANT03> ul:makes ?p }
+      SELECT ?name WHERE { ?st gtfs:stop ?s ; gtfs:trip/gtfs:route ?r . ?s rdfs:label ?name }
+      GROUP BY ?s ?name HAVING (COUNT(DISTINCT ?r) > 1)
   - id: 6
-    question: {en: "Which plants ship through port PORT04?"}
+    question: {en: "How many wheelchair accessible trips does route 99 have?"}
     gold: |
-      SELECT ?plant WHERE { ?plant ul:servesPort <https://ul.edu.lb/kr/id/port/brunel/PORT04> }
+      SELECT (COUNT(?t) AS ?n) WHERE { ?t gtfs:wheelchairAccessible gtfs:WheelchairAccessible ; gtfs:route/gtfs:shortName "99" }
   - id: 7
-    question: {en: "How many orders did customer V555_15 place?"}
+    question: {en: "Which route has the most trips?"}
     gold: |
-      SELECT (COUNT(?o) AS ?n) WHERE { ?o ul:orderedBy <https://ul.edu.lb/kr/id/customer/brunel/V555_15> }
+      SELECT ?name WHERE { ?t gtfs:route ?r . ?r gtfs:shortName ?name } GROUP BY ?r ?name ORDER BY DESC(COUNT(?t)) LIMIT 1
   - id: 8
-    question: {en: "Which customers have at least one late order?"}
+    question: {en: "What is the long name of route 2?"}
     gold: |
-      SELECT DISTINCT ?c WHERE { ?o a ul:LateOrder ; ul:orderedBy ?c }
+      SELECT ?long WHERE { ?r gtfs:shortName "2" ; gtfs:longName ?long }
   - id: 9
-    question: {en: "Which service levels do orders use?"}
+    question: {en: "At what time does the first trip of route 1 leave on Saturday?"}
     gold: |
-      SELECT DISTINCT ?s WHERE { ?o ul:serviceLevel ?s }
+      SELECT (MIN(?time) AS ?first) WHERE {
+        ?t gtfs:route/gtfs:shortName "1" ; gtfs:service/gtfs:serviceRule/gtfs:saturday true .
+        ?st gtfs:trip ?t ; gtfs:stopSequence 1 ; gtfs:departureTime ?time }
   - id: 10
-    question: {en: "How many orders leave from port PORT09?"}
+    question: {en: "Which stops does route 2 serve?"}
     gold: |
-      SELECT (COUNT(?o) AS ?n) WHERE { ?o ul:shipsFrom <https://ul.edu.lb/kr/id/port/brunel/PORT09> }
+      SELECT DISTINCT ?name WHERE { ?st gtfs:trip/gtfs:route/gtfs:shortName "2" ; gtfs:stop/rdfs:label ?name }
   - id: 11
-    question: {en: "Which plant makes the most products?"}
+    question: {en: "Which agency runs the routes?"}
     gold: |
-      SELECT ?plant WHERE { ?plant ul:makes ?p } GROUP BY ?plant ORDER BY DESC(COUNT(?p)) LIMIT 1
+      SELECT DISTINCT ?name WHERE { ?r gtfs:agency/rdfs:label ?name }
   - id: 12
-    question: {en: "How many rate bands does carrier V444_0 have?"}
+    question: {en: "How many stops does trip 465522 make?"}
     gold: |
-      SELECT (COUNT(?b) AS ?n) WHERE { ?b ul:bandCarrier <https://ul.edu.lb/kr/id/carrier/brunel/V444_0> }
+      SELECT (COUNT(?st) AS ?n) WHERE { ?st gtfs:trip <https://ul.edu.lb/kr/id/trip/guelph/465522> }
   - id: 13
-    question: {en: "Which customers are located in Beirut?"}
-    refuse: "the graph has no locations for customers"
+    question: {en: "Is the bus on route 99 late right now?"}
+    refuse: "the graph has the timetable only, no real-time positions or delays"
   - id: 14
-    question: {en: "What is the email address of customer V555_15?"}
-    refuse: "the graph has no contact details"
+    question: {en: "How much does a bus ticket cost?"}
+    refuse: "the graph has no fares"
   - id: 15
-    question: {en: "Which orders were cancelled?"}
-    refuse: "the graph has no order status"
+    question: {en: "Which stops have a shelter?"}
+    refuse: "the graph has no information about shelters"
+  - id: 16
+    question: {en: "Who drives trip 465522?"}
+    refuse: "the graph has no drivers or staff"

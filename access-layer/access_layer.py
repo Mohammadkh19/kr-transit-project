@@ -38,6 +38,7 @@ load_dotenv(ROOT / ".env")
 # ---- YOUR TEAM: your ontology's namespace and the prefix the model should use
 NS = "http://vocab.gtfs.org/terms#"
 PFX = "gtfs"
+FIXED_VALUES = {"WheelchairAccessible", "NotWheelchairAccessible", "CheckParentStation", "Bus"}
 # ----
 GRAPH = ROOT / "build" / "graph.nt"
 VOID_FILE = Path(os.environ.get("VOID_FILE", ROOT / "build" / "void.ttl"))
@@ -243,7 +244,7 @@ def unknown_properties(query, classes, props):
 
 def unknown_classes(query, classes, props):
     """Problems: classes of your namespace the query uses that the graph does not have."""
-    known = {c[len(NS):] for c in classes}
+    known = {c[len(NS):] for c in classes} | FIXED_VALUES
     used = {t for t in ul_terms(query) if t[0].isupper()}
     listed = ", ".join(sorted(f"{PFX}:" + k for k in known))
     return [f"{PFX}:{t} is not a class of this graph. The classes are: {listed}" for t in sorted(used - known)]
