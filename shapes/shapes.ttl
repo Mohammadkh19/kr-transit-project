@@ -1,42 +1,102 @@
-## shapes.ttl · YOUR TEAM: replace these with the shapes for your own
-## constraint inventory (Session 4). Every Violation stops the pipeline: the
-## endpoint is loaded only with data that passes (pipeline/run.py).
-##
-## The example: the core order shape of the course's Session 4 lab.
+## shapes.ttl: the SHACL rules our data must pass (Session 4 layer).
+## pipeline/run.py checks build/graph.nt + ontology/ontology.ttl against this
+## file. A Violation stops the pipeline (the endpoint is not loaded); a
+## Warning is reported in build/shacl-report.txt and lets the data through.
+## Each rule has a number (C1, C2, ...) from shapes/constraints.md.
 
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix ul:   <https://ul.edu.lb/kr/scm#> .
-@prefix uls:  <https://ul.edu.lb/kr/shapes#> .
+@prefix geo:  <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix gtfs: <http://vocab.gtfs.org/terms#> .
+@prefix trs:  <https://ul.edu.lb/kr/transit/shapes#> .
 
-uls:OrderShape a sh:NodeShape ;
-    rdfs:label "Every order" ;
-    sh:targetClass ul:Order ;
-    sh:property [
-        sh:path ul:orderId ; sh:minCount 1 ; sh:maxCount 1 ;
-        sh:datatype xsd:string ; sh:pattern "^[0-9]+\\.[0-9]$" ;
-        sh:name "order id" ; sh:message "An order has exactly one id, digits, a dot, one digit."
-    ] ;
-    sh:property [
-        sh:path ul:orderDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
-        sh:name "order date"
-    ] ;
-    sh:property [
-        sh:path ul:carriedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ul:Carrier ;
-        sh:name "carrier" ; sh:message "An order has exactly one carrier, and it is a Carrier."
-    ] ;
-    sh:property [
-        sh:path ul:fromPlant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class ul:Plant ;
-        sh:name "plant"
-    ] ;
-    sh:property [
-        sh:path ul:serviceLevel ; sh:minCount 1 ; sh:maxCount 1 ;
-        sh:in ( "CRF" "DTD" "DTP" ) ;
-        sh:name "service level" ; sh:message "Service level is one of CRF, DTD, DTP."
-    ] ;
-    sh:property [
-        sh:path ul:weight ; sh:minCount 1 ; sh:maxCount 1 ;
-        sh:datatype xsd:decimal ; sh:minExclusive 0 ;
-        sh:name "weight" ; sh:message "An order has one weight, above 0 kg."
-    ] .
+## C1, C2: every trip belongs to exactly one route and one service
+trs:TripShape a sh:NodeShape ;
+    sh:targetClass gtfs:Trip ;
+    sh:property [ sh:path gtfs:route ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gtfs:Route ;
+        sh:message "C1: a trip belongs to exactly one route." ] ;
+    sh:property [ sh:path gtfs:service ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gtfs:Service ;
+        sh:message "C2: a trip runs on exactly one service." ] .
+
+## C3, C4, C5, C6: every stop time has one trip, one stop, a position, and clock times
+trs:StopTimeShape a sh:NodeShape ;
+    sh:targetClass gtfs:StopTime ;
+    sh:property [ sh:path gtfs:trip ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gtfs:Trip ;
+        sh:message "C3: a stop time belongs to exactly one trip." ] ;
+    sh:property [ sh:path gtfs:stop ; sh:minCount 1 ; sh:maxCount 1 ; sh:class gtfs:Stop ;
+        sh:message "C4: a stop time is at exactly one stop." ] ;
+    sh:property [ sh:path gtfs:stopSequence ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:datatype xsd:integer ; sh:minInclusive 0 ;
+        sh:message "C5: a stop time has one position in its trip, a whole number." ] ;
+    sh:property [ sh:path gtfs:arrivalTime ; sh:maxCount 1 ;
+        sh:pattern "^[0-9]{1,2}:[0-5][0-9]:[0-5][0-9]$" ;
+        sh:message "C6: an arrival time looks like H:MM:SS." ] ;
+    sh:property [ sh:path gtfs:departureTime ; sh:maxCount 1 ;
+        sh:pattern "^[0-9]{1,2}:[0-5][0-9]:[0-5][0-9]$" ;
+        sh:message "C6: a departure time looks like H:MM:SS." ] .
+
+## C7 (Warning): GTFS writes times with two digits, HH:MM:SS. Guelph writes
+## 7:01:06, not 07:01:06. We report it and keep the data.
+trs:TimeFormatShape a sh:NodeShape ;
+    sh:targetClass gtfs:StopTime ;
+    sh:property [ sh:path gtfs:departureTime ; sh:pattern "^[0-9]{2}:" ; sh:severity sh:Warning ;
+        sh:message "C7: GTFS writes times as HH:MM:SS; this one has a one-digit hour." ] .
+
+## C8: along a trip, the distance traveled goes up from one stop to the next
+## (the official validator found 96 breaks of this rule in the full feed)
+trs:DistanceShape a sh:NodeShape ;
+    sh:targetClass gtfs:Trip ;
+    sh:sparql [ a sh:SPARQLConstraint ;
+        sh:message "C8: along this trip the distance traveled does not go up between stop {?n} and the next stop." ;
+        sh:prefixes trs:prefixes ;
+        sh:select """
+            SELECT $this ?n WHERE {
+              ?a gtfs:trip $this ; gtfs:stopSequence ?n ; gtfs:distanceTraveled ?d .
+              ?b gtfs:trip $this ; gtfs:stopSequence ?m ; gtfs:distanceTraveled ?e .
+              FILTER (?m = ?n + 1 && ?e <= ?d)
+            }""" ] .
+
+## C9: a stop has one name and a real position on Earth
+trs:StopShape a sh:NodeShape ;
+    sh:targetClass gtfs:Stop ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "C9: a stop has exactly one name." ] ;
+    sh:property [ sh:path geo:lat ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
+        sh:minInclusive -90 ; sh:maxInclusive 90 ;
+        sh:message "C9: a stop has one latitude, between -90 and 90." ] ;
+    sh:property [ sh:path geo:long ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ;
+        sh:minInclusive -180 ; sh:maxInclusive 180 ;
+        sh:message "C9: a stop has one longitude, between -180 and 180." ] .
+
+## C10 (Warning): every stop is used by at least one trip
+## (the official validator found 5 unused stops in the full feed)
+trs:UsedStopShape a sh:NodeShape ;
+    sh:targetClass gtfs:Stop ;
+    sh:property [ sh:path [ sh:inversePath gtfs:stop ] ; sh:minCount 1 ; sh:severity sh:Warning ;
+        sh:message "C10: no trip stops at this stop." ] .
+
+## C11: a calendar rule says yes or no for each day, and runs on at least one day
+## (the full feed has service 7, which runs on no day)
+trs:CalendarShape a sh:NodeShape ;
+    sh:targetClass gtfs:CalendarRule ;
+    sh:property [ sh:path gtfs:monday ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path gtfs:tuesday ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path gtfs:wednesday ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path gtfs:thursday ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path gtfs:friday ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path gtfs:saturday ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path gtfs:sunday ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:sparql [ a sh:SPARQLConstraint ;
+        sh:message "C11: this calendar rule runs on no day of the week." ;
+        sh:prefixes trs:prefixes ;
+        sh:select """
+            SELECT $this WHERE {
+              FILTER NOT EXISTS {
+                $this ?day true .
+                FILTER (?day IN (gtfs:monday, gtfs:tuesday, gtfs:wednesday, gtfs:thursday,
+                                 gtfs:friday, gtfs:saturday, gtfs:sunday))
+              }
+            }""" ] .
+
+trs:prefixes sh:declare [ sh:prefix "gtfs" ; sh:namespace "http://vocab.gtfs.org/terms#"^^xsd:anyURI ] .
