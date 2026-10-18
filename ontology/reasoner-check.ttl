@@ -1,0 +1,18 @@
+## A few real things from our sample (data/gtfs-sample.sql), written by hand,
+## to show what the reasoner infers. Ids are the feed's own ids.
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix gtfs: <http://vocab.gtfs.org/terms#> .
+@prefix id:   <https://ul.edu.lb/kr/id/> .
+
+# service 3 runs on Sundays only; service 1 runs Monday to Friday
+id:service-3 a owl:NamedIndividual , gtfs:Service ; gtfs:serviceRule id:calendar-3 .
+id:calendar-3 a owl:NamedIndividual ; gtfs:sunday "1"^^xsd:boolean .
+id:service-1 a owl:NamedIndividual , gtfs:Service ; gtfs:serviceRule id:calendar-1 .
+id:calendar-1 a owl:NamedIndividual ; gtfs:sunday "0"^^xsd:boolean .
+
+# trip 465522 (route 1) has wheelchair_accessible = 1; it is NOT typed as a Trip here
+id:trip-465522 a owl:NamedIndividual ;
+    gtfs:route id:route-2841 ;
+    gtfs:wheelchairAccessible gtfs:WheelchairAccessible .
+id:route-2841 a owl:NamedIndividual .

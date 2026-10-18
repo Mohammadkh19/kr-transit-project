@@ -1,86 +1,105 @@
-## ontology.ttl · YOUR TEAM: replace this with your own ontology (Session 3):
-## a real published vocabulary reused, competency questions as annotations,
-## a declared OWL profile, a version IRI, and a clean reasoner run.
+## Guelph transit ontology (KR team project, Session 3 layer).
 ##
-## The example: the course's Brunel vocabulary (classes, properties, labels,
-## domains and ranges, and one rule: a late order is an order). The pipeline
-## validates the data together with this file, so the subclass reaches the
-## shapes (Session 5 found what happens without it).
+## Reuses Linked GTFS (http://vocab.gtfs.org/terms#, CC BY 3.0) for every
+## GTFS table we use, and adds only what our competency questions need, in
+## our own namespace tr:. OWL 2 EL profile. Competency questions are in
+## competency_questions.md and on each class we add (tr:answersCQ).
+##
+## Why we do not owl:import the published gtfs.ttl: three of its axioms
+## would give wrong inferences on our data (see competency_questions.md,
+## "Reuse decisions"). We reuse the IRIs and declare only what we need.
 
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix ul: <https://ul.edu.lb/kr/scm#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix gtfs:    <http://vocab.gtfs.org/terms#> .
+@prefix tr:      <https://ul.edu.lb/kr/transit#> .
 
-<https://ul.edu.lb/kr/scm> a owl:Ontology ;
-    owl:versionIRI <https://ul.edu.lb/kr/scm/1.0.0> ;
-    dcterms:title "Brunel supply chain vocabulary (example)"@en ;
+# ------------------------------------------------------------ the ontology
+<https://ul.edu.lb/kr/transit> a owl:Ontology ;
+    owl:versionIRI <https://ul.edu.lb/kr/transit/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    dcterms:title "Guelph transit ontology"@en ;
+    dcterms:description "Bus routes, trips, stops and service days of Guelph Transit, built on Linked GTFS."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
-    skos:note "Competency question: how many orders did each carrier carry, and how many were late?"@en .
+    dcterms:source <http://vocab.gtfs.org/terms#> ;
+    skos:note "OWL 2 profile: EL."@en ;
+    skos:note "CQ1: Which stops does route 99 serve, in order?"@en ;
+    skos:note "CQ2: Which stops are served by more than one route (places to change bus)?"@en ;
+    skos:note "CQ3: Which routes run on Sunday?"@en ;
+    skos:note "CQ4: Which trips are wheelchair accessible, and on which routes?"@en ;
+    skos:note "CQ5: When does the first trip of each route leave on a Saturday?"@en .
 
-ul:Carrier a rdfs:Class ;
-    rdfs:label "Carrier"@en .
+tr:answersCQ a owl:AnnotationProperty ;
+    rdfs:label "answers competency question"@en .
 
-ul:Customer a rdfs:Class ;
-    rdfs:label "Customer"@en .
+# ------------------------------------------------------------ reused classes (Linked GTFS)
+gtfs:Agency a owl:Class ; rdfs:label "Agency"@en ; rdfs:isDefinedBy <http://vocab.gtfs.org/terms#> .
+gtfs:Route a owl:Class ; rdfs:label "Route"@en ; rdfs:isDefinedBy <http://vocab.gtfs.org/terms#> .
+gtfs:Trip a owl:Class ; rdfs:label "Trip"@en ; rdfs:isDefinedBy <http://vocab.gtfs.org/terms#> .
+gtfs:StopTime a owl:Class ; rdfs:label "Stop time"@en ; rdfs:isDefinedBy <http://vocab.gtfs.org/terms#> .
+gtfs:Stop a owl:Class ; rdfs:label "Stop"@en ; rdfs:isDefinedBy <http://vocab.gtfs.org/terms#> ;
+    skos:closeMatch <https://schema.org/BusStop> .
+gtfs:Service a owl:Class ; rdfs:label "Service"@en ; rdfs:isDefinedBy <http://vocab.gtfs.org/terms#> .
+gtfs:CalendarRule a owl:Class ; rdfs:label "Calendar rule"@en ; rdfs:isDefinedBy <http://vocab.gtfs.org/terms#> .
+gtfs:RouteType a owl:Class ; rdfs:label "Route type"@en ; rdfs:isDefinedBy <http://vocab.gtfs.org/terms#> .
+gtfs:WheelchairBoardingStatus a owl:Class ; rdfs:label "Wheelchair boarding status"@en ;
+    rdfs:isDefinedBy <http://vocab.gtfs.org/terms#> .
 
-ul:LateOrder a rdfs:Class ;
-    rdfs:label "Late order"@en ;
-    rdfs:subClassOf ul:Order .
+# the fixed values (individuals) that Linked GTFS defines and our data uses
+gtfs:Bus a owl:NamedIndividual , gtfs:RouteType ; rdfs:label "Bus"@en .
+gtfs:WheelchairAccessible a owl:NamedIndividual , gtfs:WheelchairBoardingStatus ; rdfs:label "Wheelchair accessible"@en .
+gtfs:NotWheelchairAccessible a owl:NamedIndividual , gtfs:WheelchairBoardingStatus ; rdfs:label "Not wheelchair accessible"@en .
+gtfs:CheckParentStation a owl:NamedIndividual , gtfs:WheelchairBoardingStatus ; rdfs:label "No information"@en .
 
-ul:Order a rdfs:Class ;
-    rdfs:label "Order"@en .
+# ------------------------------------------------------------ reused properties: links between things
+gtfs:agency a owl:ObjectProperty ; rdfs:label "agency"@en ; rdfs:domain gtfs:Route ; rdfs:range gtfs:Agency .
+gtfs:route a owl:ObjectProperty ; rdfs:label "route"@en ; rdfs:domain gtfs:Trip ; rdfs:range gtfs:Route .
+gtfs:service a owl:ObjectProperty ; rdfs:label "service"@en ; rdfs:domain gtfs:Trip ; rdfs:range gtfs:Service .
+gtfs:serviceRule a owl:ObjectProperty ; rdfs:label "service rule"@en ; rdfs:domain gtfs:Service ; rdfs:range gtfs:CalendarRule .
+gtfs:trip a owl:ObjectProperty ; rdfs:label "trip"@en ; rdfs:domain gtfs:StopTime ; rdfs:range gtfs:Trip .
+gtfs:stop a owl:ObjectProperty ; rdfs:label "stop"@en ; rdfs:domain gtfs:StopTime ; rdfs:range gtfs:Stop .
+gtfs:routeType a owl:ObjectProperty ; rdfs:label "route type"@en ; rdfs:domain gtfs:Route ; rdfs:range gtfs:RouteType .
+gtfs:wheelchairAccessible a owl:ObjectProperty ; rdfs:label "wheelchair accessible"@en ;
+    rdfs:range gtfs:WheelchairBoardingStatus .
 
-ul:Plant a rdfs:Class ;
-    rdfs:label "Plant"@en .
+# ------------------------------------------------------------ reused properties: values
+gtfs:shortName a owl:DatatypeProperty ; rdfs:label "short name"@en .
+gtfs:longName a owl:DatatypeProperty ; rdfs:label "long name"@en ; rdfs:domain gtfs:Route .
+gtfs:headsign a owl:DatatypeProperty ; rdfs:label "headsign"@en .
+gtfs:stopSequence a owl:DatatypeProperty ; rdfs:label "stop sequence"@en ; rdfs:domain gtfs:StopTime .
+gtfs:arrivalTime a owl:DatatypeProperty ; rdfs:label "arrival time"@en ; rdfs:domain gtfs:StopTime .
+gtfs:departureTime a owl:DatatypeProperty ; rdfs:label "departure time"@en ; rdfs:domain gtfs:StopTime .
+gtfs:distanceTraveled a owl:DatatypeProperty ; rdfs:label "distance traveled"@en ; rdfs:domain gtfs:StopTime .
+gtfs:monday a owl:DatatypeProperty ; rdfs:label "monday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
+gtfs:tuesday a owl:DatatypeProperty ; rdfs:label "tuesday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
+gtfs:wednesday a owl:DatatypeProperty ; rdfs:label "wednesday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
+gtfs:thursday a owl:DatatypeProperty ; rdfs:label "thursday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
+gtfs:friday a owl:DatatypeProperty ; rdfs:label "friday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
+gtfs:saturday a owl:DatatypeProperty ; rdfs:label "saturday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
+gtfs:sunday a owl:DatatypeProperty ; rdfs:label "sunday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
 
-ul:Port a rdfs:Class ;
-    rdfs:label "Port"@en .
+# ------------------------------------------------------------ our additions (only where Linked GTFS has a gap)
+tr:SundayService a owl:Class ;
+    rdfs:label "Sunday service"@en ;
+    skos:definition "A service whose calendar rule says it runs on Sundays."@en ;
+    tr:answersCQ "CQ3: Which routes run on Sunday?"@en ;
+    rdfs:subClassOf gtfs:Service ;
+    owl:equivalentClass [ a owl:Class ;
+        owl:intersectionOf ( gtfs:Service
+            [ a owl:Restriction ; owl:onProperty gtfs:serviceRule ;
+              owl:someValuesFrom [ a owl:Restriction ; owl:onProperty gtfs:sunday ;
+                                   owl:hasValue "true"^^xsd:boolean ] ] ) ] .
 
-ul:Product a rdfs:Class ;
-    rdfs:label "Product"@en .
-
-ul:RateBand a rdfs:Class ;
-    rdfs:label "Freight rate band"@en .
-
-ul:carriedBy a rdf:Property ;
-    rdfs:label "carried by"@en ;
-    rdfs:domain ul:Order ;
-    rdfs:range ul:Carrier .
-
-ul:fromPlant a rdf:Property ;
-    rdfs:label "made at plant"@en ;
-    rdfs:domain ul:Order ;
-    rdfs:range ul:Plant .
-
-ul:makes a rdf:Property ;
-    rdfs:label "makes product"@en ;
-    rdfs:domain ul:Plant ;
-    rdfs:range ul:Product .
-
-ul:ofProduct a rdf:Property ;
-    rdfs:label "of product"@en ;
-    rdfs:domain ul:Order ;
-    rdfs:range ul:Product .
-
-ul:orderedBy a rdf:Property ;
-    rdfs:label "ordered by"@en ;
-    rdfs:domain ul:Order ;
-    rdfs:range ul:Customer .
-
-ul:servesPort a rdf:Property ;
-    rdfs:label "ships through port"@en ;
-    rdfs:domain ul:Plant ;
-    rdfs:range ul:Port .
-
-ul:shipsFrom a rdf:Property ;
-    rdfs:label "leaves from port"@en ;
-    rdfs:domain ul:Order ;
-    rdfs:range ul:Port .
-
-ul:shipsTo a rdf:Property ;
-    rdfs:label "arrives at port"@en ;
-    rdfs:domain ul:Order ;
-    rdfs:range ul:Port .
+tr:AccessibleTrip a owl:Class ;
+    rdfs:label "Wheelchair accessible trip"@en ;
+    skos:definition "A trip whose vehicle can carry at least one rider in a wheelchair."@en ;
+    tr:answersCQ "CQ4: Which trips are wheelchair accessible, and on which routes?"@en ;
+    rdfs:subClassOf gtfs:Trip ;
+    owl:equivalentClass [ a owl:Class ;
+        owl:intersectionOf ( gtfs:Trip
+            [ a owl:Restriction ; owl:onProperty gtfs:wheelchairAccessible ;
+              owl:hasValue gtfs:WheelchairAccessible ] ) ] .
