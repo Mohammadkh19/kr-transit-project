@@ -1,0 +1,74 @@
+{
+ "08dd8d1c8dabe042": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT DISTINCT ?route WHERE {\n  ?trip gtfs:route/gtfs:shortName ?route ;\n        gtfs:service/gtfs:serviceRule/gtfs:sunday true .\n}"
+ },
+ "101802a0e80b1c96": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(?route) AS ?routes) WHERE {\n  ?route a gtfs:Route .\n}"
+ },
+ "2256f976ff4b68b1": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(DISTINCT ?stop) AS ?stopCount) WHERE {\n  ?stopTime gtfs:trip/gtfs:route/gtfs:shortName \"99\" ;\n            gtfs:stop ?stop .\n}"
+ },
+ "227cbd91ba94472f": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: fares"
+ },
+ "2a7e80029f6d1630": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(?trip) AS ?trips) WHERE {\n  ?trip gtfs:route ?route ;\n        gtfs:wheelchairAccessible gtfs:WheelchairAccessible .\n  ?route gtfs:shortName \"99\" .\n}"
+ },
+ "2d22c6d979f42a08": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: wheelchair accessibility information"
+ },
+ "447ee1bc91be67de": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: shelters"
+ },
+ "5a186413ebe4ac6c": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (MIN(?departure) AS ?firstDeparture) WHERE {\n  ?trip gtfs:route ?route ;\n        gtfs:service/gtfs:serviceRule/gtfs:saturday true .\n  ?route gtfs:shortName \"1\" .\n  ?stopTime gtfs:trip ?trip ;\n            gtfs:stopSequence 1 ;\n            gtfs:departureTime ?departure .\n}"
+ },
+ "5f168150f4edead0": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nSELECT DISTINCT ?agencyName WHERE {\n  ?route gtfs:agency ?agency .\n  ?agency rdfs:label ?agencyName .\n}"
+ },
+ "87503cecaf9b733e": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: real-time delays"
+ },
+ "8d3cd1c88c0d06d0": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(DISTINCT ?route) AS ?count) WHERE {\n  ?route a gtfs:Route .\n}"
+ },
+ "93a43eb05a48f2c9": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(?trip) AS ?trips) WHERE {\n  ?trip gtfs:service/gtfs:serviceRule/gtfs:sunday true .\n}"
+ },
+ "9b1f0b70f7ef04ef": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT ?shortName WHERE {\n  ?trip gtfs:route ?route .\n  ?route gtfs:shortName ?shortName .\n} GROUP BY ?shortName ORDER BY DESC(COUNT(?trip)) LIMIT 1"
+ },
+ "ab7d9a6830add1f3": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(?stopTime) AS ?count) WHERE {\n  ?stopTime gtfs:trip <https://ul.edu.lb/kr/id/trip/guelph/465522> .\n}"
+ },
+ "b73c25ae6afed5c5": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT ?longName WHERE {\n  ?route gtfs:shortName \"2\" ;\n         gtfs:longName ?longName .\n}"
+ },
+ "d398820ec016a0aa": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: routes serving a stop"
+ },
+ "d3cb07c6f70841cc": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "REFUSE: people"
+ },
+ "efcc380469242ca6": {
+  "model": "gemini-3.5-flash-lite",
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nSELECT DISTINCT ?stop ?name WHERE {\n  ?stopTime gtfs:trip/gtfs:route/gtfs:shortName \"2\" ;\n            gtfs:stop ?stop .\n  ?stop rdfs:label ?name .\n}"
+ }
+}

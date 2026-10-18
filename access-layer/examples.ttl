@@ -1,53 +1,73 @@
-# Example queries for the access layer, in the SHACL vocabulary that
-# sparql-llm and the SIB endpoints use: one sh:SPARQLExecutable per example,
-# the question in rdfs:comment, the query in sh:select.
-# None of these is a question of the test set (questions.yaml).
-
-@prefix ex: <https://ul.edu.lb/kr/brunel/examples/> .
+@prefix ex: <https://ul.edu.lb/kr/guelph/examples/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
 ex:1 a sh:SPARQLExecutable, sh:SPARQLSelectExecutable ;
-    rdfs:comment "Which orders did carrier V44_3 carry, with their service level?" ;
-    sh:select """PREFIX ul: <https://ul.edu.lb/kr/scm#>
-SELECT ?order ?service WHERE {
-  ?order ul:carriedBy <https://ul.edu.lb/kr/id/carrier/brunel/V44_3> ;
-         ul:serviceLevel ?service .
+    rdfs:comment "How many trips does route 1 have?" ;
+    sh:select """PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+SELECT (COUNT(?trip) AS ?trips) WHERE {
+  ?trip gtfs:route ?route .
+  ?route gtfs:shortName "1" .
 }""" .
 
 ex:2 a sh:SPARQLExecutable, sh:SPARQLSelectExecutable ;
-    rdfs:comment "How many orders and how many late orders does each carrier have?" ;
-    sh:select """PREFIX ul: <https://ul.edu.lb/kr/scm#>
-SELECT ?carrier (COUNT(?order) AS ?orders) (SUM(IF(?late > 0, 1, 0)) AS ?lateOrders) WHERE {
-  ?order ul:carriedBy ?carrier ; ul:lateDays ?late .
-} GROUP BY ?carrier""" .
+    rdfs:comment "Which routes run on Saturday?" ;
+    sh:select """PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+SELECT DISTINCT ?route WHERE {
+  ?trip gtfs:route/gtfs:shortName ?route ;
+        gtfs:service/gtfs:serviceRule/gtfs:saturday true .
+}""" .
 
 ex:3 a sh:SPARQLExecutable, sh:SPARQLSelectExecutable ;
-    rdfs:comment "Which products does plant PLANT08 make?" ;
-    sh:select """PREFIX ul: <https://ul.edu.lb/kr/scm#>
-SELECT ?product WHERE {
-  <https://ul.edu.lb/kr/id/plant/brunel/PLANT08> ul:makes ?product .
+    rdfs:comment "Which stops does route 99 serve, with their names?" ;
+    sh:select """PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?stop ?name WHERE {
+  ?stopTime gtfs:trip/gtfs:route/gtfs:shortName "99" ;
+            gtfs:stop ?stop .
+  ?stop rdfs:label ?name .
 }""" .
 
 ex:4 a sh:SPARQLExecutable, sh:SPARQLSelectExecutable ;
-    rdfs:comment "How many orders are there in total, late ones included?" ;
-    sh:select """PREFIX ul: <https://ul.edu.lb/kr/scm#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT (COUNT(DISTINCT ?order) AS ?orders) WHERE {
-  ?order a/rdfs:subClassOf* ul:Order .
+    rdfs:comment "Which trips of route 1 are wheelchair accessible?" ;
+    sh:select """PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+SELECT ?trip WHERE {
+  ?trip gtfs:route/gtfs:shortName "1" ;
+        gtfs:wheelchairAccessible gtfs:WheelchairAccessible .
 }""" .
 
 ex:5 a sh:SPARQLExecutable, sh:SPARQLSelectExecutable ;
-    rdfs:comment "Which ports does plant PLANT03 ship through?" ;
-    sh:select """PREFIX ul: <https://ul.edu.lb/kr/scm#>
-SELECT ?port WHERE {
-  <https://ul.edu.lb/kr/id/plant/brunel/PLANT03> ul:servesPort ?port .
+    rdfs:comment "Where is the stop Gordon at Kortright southbound?" ;
+    sh:select """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+SELECT ?lat ?long WHERE {
+  ?stop rdfs:label "Gordon at Kortright southbound" ;
+        geo:lat ?lat ; geo:long ?long .
 }""" .
 
 ex:6 a sh:SPARQLExecutable, sh:SPARQLSelectExecutable ;
-    rdfs:comment "How many orders did customer V555_15 place with service level DTP?" ;
-    sh:select """PREFIX ul: <https://ul.edu.lb/kr/scm#>
-SELECT (COUNT(?order) AS ?orders) WHERE {
-  ?order ul:orderedBy <https://ul.edu.lb/kr/id/customer/brunel/V555_15> ;
-         ul:serviceLevel "DTP" .
+    rdfs:comment "At what time does trip 465524 arrive at each of its stops?" ;
+    sh:select """PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?order ?name ?arrival WHERE {
+  ?stopTime gtfs:trip <https://ul.edu.lb/kr/id/trip/guelph/465524> ;
+            gtfs:stopSequence ?order ; gtfs:arrivalTime ?arrival ;
+            gtfs:stop/rdfs:label ?name .
+} ORDER BY ?order""" .
+
+ex:7 a sh:SPARQLExecutable, sh:SPARQLSelectExecutable ;
+    rdfs:comment "How many trips does each route have on weekdays (Monday)?" ;
+    sh:select """PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+SELECT ?route (COUNT(?trip) AS ?trips) WHERE {
+  ?trip gtfs:route/gtfs:shortName ?route ;
+        gtfs:service/gtfs:serviceRule/gtfs:monday true .
+} GROUP BY ?route ORDER BY ?route""" .
+
+ex:8 a sh:SPARQLExecutable, sh:SPARQLSelectExecutable ;
+    rdfs:comment "Which routes stop at Gordon at Harts northbound?" ;
+    sh:select """PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?route WHERE {
+  ?stopTime gtfs:stop/rdfs:label "Gordon at Harts northbound" ;
+            gtfs:trip/gtfs:route/gtfs:shortName ?route .
 }""" .
