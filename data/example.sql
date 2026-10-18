@@ -108,7 +108,7 @@ INSERT INTO trips VALUES ('2866', '3', '455495', '99 Mainline Southbound', NULL,
 INSERT INTO trips VALUES ('2866', '3', '455496', '99 Mainline Southbound', NULL, '1', '18969', '9036', '1', '1');
 
 CREATE TABLE stops (stop_id TEXT, stop_code TEXT, stop_name TEXT, stop_desc TEXT, stop_lat TEXT, stop_lon TEXT, zone_id TEXT, stop_url TEXT, location_type TEXT, parent_station TEXT, stop_timezone TEXT, wheelchair_boarding TEXT);
-INSERT INTO stops VALUES ('103', '103', 'Gordon at Kortright southbound', 'Gordon Street', '43.522362', '-80.213442', NULL, NULL, NULL, NULL, NULL, '0');
+INSERT INTO stops VALUES ('103', '103', 'Gordon at Kortright southbound', 'Gordon Street', '200', '-80.213442', NULL, NULL, NULL, NULL, NULL, '0');
 INSERT INTO stops VALUES ('104', '104', 'Gordon at Harts southbound', 'Gordon Street', '43.519528', '-80.207687', '0', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO stops VALUES ('105', '105', 'Gordon at Landsdown southbound', 'Gordon Street', '43.518121', '-80.205662', NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO stops VALUES ('106', '106', 'Gordon at Edinburgh southbound', 'Gordon Street', '43.516559', '-80.203531', NULL, NULL, NULL, NULL, NULL, NULL);
