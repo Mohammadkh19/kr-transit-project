@@ -1,5 +1,4 @@
 -- A sample of the Guelph Transit GTFS feed (service 2026-01-04 to 2026-05-02),
--- routes 1, 2, 99, made by data/make_sample.py.
 -- routes 1, 2, 99, trips starting 07:00-08:59, made by data/make_sample.py.
 
 CREATE TABLE agency (agency_id TEXT, agency_name TEXT, agency_url TEXT, agency_timezone TEXT, agency_lang TEXT, agency_phone TEXT, agency_fare_url TEXT);

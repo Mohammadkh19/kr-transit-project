@@ -1,5 +1,5 @@
-Reasoner run, 2026-10-18: HermiT (owlready2 0.51) on ontology.ttl + reasoner-check.ttl
-Triples loaded: 180
+Reasoner run, 2026-10-19: HermiT (owlready2 0.51) on ontology.ttl + reasoner-check.ttl
+Triples loaded: 186
 Impossible classes (equivalent to owl:Nothing): none
 Inferred types of the check individuals:
   calendar-1: CalendarRule

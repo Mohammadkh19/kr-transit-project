@@ -58,7 +58,6 @@ def sql_value(v):
 
 
 lines = ["-- A sample of the Guelph Transit GTFS feed (service 2026-01-04 to 2026-05-02),",
-         "-- routes " + ", ".join(sorted(ROUTES_TO_KEEP)) + ", made by data/make_sample.py.",
                  "-- routes " + ", ".join(sorted(ROUTES_TO_KEEP)) + ", trips starting 07:00-08:59, made by data/make_sample.py.", ""]
 for name, rows in tables.items():
     if not rows:

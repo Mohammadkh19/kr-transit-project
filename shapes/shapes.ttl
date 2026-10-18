@@ -2,7 +2,7 @@
 ## pipeline/run.py checks build/graph.nt + ontology/ontology.ttl against this
 ## file. A Violation stops the pipeline (the endpoint is not loaded); a
 ## Warning is reported in build/shacl-report.txt and lets the data through.
-## Each rule has a number (C1, C2, ...) from shapes/constraints.md.
+## Each rule has a number (C1, C2, ...) from shapes/triage.md.
 
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
