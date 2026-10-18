@@ -1,10 +1,11 @@
 # data/
 
-`example.sql` is a tiny real sample of the course's Brunel case: 60 orders
-(20 of them late, all from customer V555_15), 22 plant ports, 57 products per
-plant, 30 freight rates. The pipeline loads it into `build/example.sqlite`
-when `DB_URL` is not set.
+`example.sql` is a sample of the Guelph Transit GTFS feed (service 4 Jan to
+2 May 2026, City of Guelph, Open Government Licence - City of Guelph v2.0):
+routes 1, 2 and 99, trips starting 07:00-08:59. 3 routes, 95 trips, 104 stops,
+2356 stop times. `make_sample.py` makes it from the unzipped feed:
 
-YOUR TEAM: either replace `example.sql` with a small sample of your own
-tables (then CI can map and validate it on every push), or set `DB_URL` in
-`.env` to your database and keep a sample here for CI.
+    py data\make_sample.py C:\path\to\gtfs-raw
+
+`gtfs-validator-report.html` is the official GTFS validator's report on the
+full feed (MobilityData, version 8.0.0).
