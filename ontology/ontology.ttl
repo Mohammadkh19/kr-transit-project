@@ -17,11 +17,12 @@
 @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
 @prefix gtfs:    <http://vocab.gtfs.org/terms#> .
 @prefix tr:      <https://ul.edu.lb/kr/transit#> .
+@prefix geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 
 # ------------------------------------------------------------ the ontology
 <https://ul.edu.lb/kr/transit> a owl:Ontology ;
-    owl:versionIRI <https://ul.edu.lb/kr/transit/1.0.0> ;
-    owl:versionInfo "1.0.0" ;
+    owl:versionIRI <https://ul.edu.lb/kr/transit/1.0.1> ;
+    owl:versionInfo "1.0.1" ;
     dcterms:title "Guelph transit ontology"@en ;
     dcterms:description "Bus routes, trips, stops and service days of Guelph Transit, built on Linked GTFS."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
@@ -81,6 +82,8 @@ gtfs:thursday a owl:DatatypeProperty ; rdfs:label "thursday"@en ; rdfs:domain gt
 gtfs:friday a owl:DatatypeProperty ; rdfs:label "friday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
 gtfs:saturday a owl:DatatypeProperty ; rdfs:label "saturday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
 gtfs:sunday a owl:DatatypeProperty ; rdfs:label "sunday"@en ; rdfs:domain gtfs:CalendarRule ; rdfs:range xsd:boolean .
+geo:lat a owl:DatatypeProperty ; rdfs:label "latitude"@en ; rdfs:domain gtfs:Stop .
+geo:long a owl:DatatypeProperty ; rdfs:label "longitude"@en ; rdfs:domain gtfs:Stop .
 
 # ------------------------------------------------------------ our additions (only where Linked GTFS has a gap)
 tr:SundayService a owl:Class ;
