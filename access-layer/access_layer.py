@@ -36,8 +36,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 load_dotenv(ROOT / ".env")
 # ---- YOUR TEAM: your ontology's namespace and the prefix the model should use
-NS = "https://ul.edu.lb/kr/scm#"
-PFX = "ul"
+NS = "http://vocab.gtfs.org/terms#"
+PFX = "gtfs"
 # ----
 GRAPH = ROOT / "build" / "graph.nt"
 VOID_FILE = Path(os.environ.get("VOID_FILE", ROOT / "build" / "void.ttl"))

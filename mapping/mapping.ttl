@@ -1,144 +1,101 @@
-## mapping.ttl · YOUR TEAM: replace this with the mapping from your own
-## relational source to your own ontology (Session 5).
-##
-## The example: the Brunel tables mapped to the course vocabulary, in R2RML
-## (W3C Recommendation, 2012), copied from the course's Session 5 lab. One
-## triples map per table or view; IRIs from one template per kind of thing.
-## pipeline/run.py runs it with Morph-KGC.
-@prefix rr:  <http://www.w3.org/ns/r2rml#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix ul:  <https://ul.edu.lb/kr/scm#> .
+## mapping.ttl: the Guelph GTFS tables (data/example.sql) mapped to our
+## ontology (ontology/ontology.ttl), in R2RML. pipeline/run.py runs it with
+## Morph-KGC. One block per kind of thing; every thing gets its IRI from one
+## template: https://ul.edu.lb/kr/id/<kind>/guelph/<GTFS id>.
+@prefix rr:   <http://www.w3.org/ns/r2rml#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix geo:  <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix gtfs: <http://vocab.gtfs.org/terms#> .
 
-########################################################################
-## Orders: one row of the orders table, one order
-########################################################################
+## Agency: one row of agency.txt
+<#Agency>
+    rr:logicalTable [ rr:tableName "agency" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/agency/guelph/{agency_id}" ; rr:class gtfs:Agency ] ;
+    rr:predicateObjectMap [ rr:predicate rdfs:label ; rr:objectMap [ rr:column "agency_name" ] ] .
 
-<#Orders>
-    rr:logicalTable [ rr:tableName "orders" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/order/brunel/{order_id}" ] ;
+## Routes: one row of routes.txt, one bus line
+<#Routes>
+    rr:logicalTable [ rr:tableName "routes" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/route/guelph/{route_id}" ; rr:class gtfs:Route ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:shortName ; rr:objectMap [ rr:column "route_short_name" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:longName ; rr:objectMap [ rr:column "route_long_name" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:agency ;
+        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/agency/guelph/{agency_id}" ] ] .
 
-    # A plain value: copy the column.
-    rr:predicateObjectMap [ rr:predicate ul:orderId ;
-        rr:objectMap [ rr:column "order_id" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:serviceLevel ;
-        rr:objectMap [ rr:column "service_level" ] ] ;
+## route_type 3 means bus (GTFS); Linked GTFS has a fixed value for it
+<#BusRoutes>
+    rr:logicalTable [ rr:sqlQuery """SELECT route_id FROM routes WHERE route_type = '3'""" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/route/guelph/{route_id}" ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:routeType ; rr:object gtfs:Bus ] .
 
-    # A value with a datatype: copy the column and say what kind of value it is.
-    rr:predicateObjectMap [ rr:predicate ul:weight ;
-        rr:objectMap [ rr:column "weight" ; rr:datatype xsd:decimal ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:unitQuantity ;
-        rr:objectMap [ rr:column "unit_quantity" ; rr:datatype xsd:integer ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:lateDays ;
-        rr:objectMap [ rr:column "ship_late_day_count" ; rr:datatype xsd:integer ] ] ;
+## Trips: one row of trips.txt, one bus journey
+<#Trips>
+    rr:logicalTable [ rr:tableName "trips" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/trip/guelph/{trip_id}" ; rr:class gtfs:Trip ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:headsign ; rr:objectMap [ rr:column "trip_headsign" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:route ;
+        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/route/guelph/{route_id}" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:service ;
+        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/service/guelph/{service_id}" ] ] .
 
-    # A foreign key: the column holds another thing's key, so build that
-    # thing's IRI with the same template its own map uses. No join needed.
-    rr:predicateObjectMap [ rr:predicate ul:carriedBy ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/carrier/brunel/{carrier}" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:fromPlant ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/plant/brunel/{plant_code}" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:shipsFrom ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/port/brunel/{origin_port}" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:shipsTo ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/port/brunel/{destination_port}" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:orderedBy ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/customer/brunel/{customer}" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:ofProduct ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/product/brunel/{product_id}" ] ] .
+## wheelchair_accessible: 1 = yes, 2 = no, empty = no information (no triple)
+<#AccessibleTrips>
+    rr:logicalTable [ rr:sqlQuery """SELECT trip_id FROM trips WHERE wheelchair_accessible = '1'""" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/trip/guelph/{trip_id}" ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:wheelchairAccessible ; rr:object gtfs:WheelchairAccessible ] .
 
-## The order date: the column holds "2013-05-26 00:00:00"; an xsd:date is the
-## first 10 characters. A logical view (an SQL query) prepares the value.
-<#OrderDates>
+<#NotAccessibleTrips>
+    rr:logicalTable [ rr:sqlQuery """SELECT trip_id FROM trips WHERE wheelchair_accessible = '2'""" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/trip/guelph/{trip_id}" ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:wheelchairAccessible ; rr:object gtfs:NotWheelchairAccessible ] .
+
+## Services and their calendar rule: one row of calendar.txt gives both.
+## GTFS writes days as 1/0; we write true/false.
+<#Services>
+    rr:logicalTable [ rr:tableName "calendar" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/service/guelph/{service_id}" ; rr:class gtfs:Service ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:serviceRule ;
+        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/calendar/guelph/{service_id}" ] ] .
+
+<#CalendarRules>
     rr:logicalTable [ rr:sqlQuery """
-        SELECT order_id, substr(order_date, 1, 10) AS order_day FROM orders""" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/order/brunel/{order_id}" ] ;
-    rr:predicateObjectMap [ rr:predicate ul:orderDate ;
-        rr:objectMap [ rr:column "order_day" ; rr:datatype xsd:date ] ] .
+        SELECT service_id,
+          CASE monday    WHEN '1' THEN 'true' ELSE 'false' END AS mon,
+          CASE tuesday   WHEN '1' THEN 'true' ELSE 'false' END AS tue,
+          CASE wednesday WHEN '1' THEN 'true' ELSE 'false' END AS wed,
+          CASE thursday  WHEN '1' THEN 'true' ELSE 'false' END AS thu,
+          CASE friday    WHEN '1' THEN 'true' ELSE 'false' END AS fri,
+          CASE saturday  WHEN '1' THEN 'true' ELSE 'false' END AS sat,
+          CASE sunday    WHEN '1' THEN 'true' ELSE 'false' END AS sun
+        FROM calendar""" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/calendar/guelph/{service_id}" ; rr:class gtfs:CalendarRule ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:monday ;    rr:objectMap [ rr:column "mon" ; rr:datatype xsd:boolean ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:tuesday ;   rr:objectMap [ rr:column "tue" ; rr:datatype xsd:boolean ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:wednesday ; rr:objectMap [ rr:column "wed" ; rr:datatype xsd:boolean ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:thursday ;  rr:objectMap [ rr:column "thu" ; rr:datatype xsd:boolean ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:friday ;    rr:objectMap [ rr:column "fri" ; rr:datatype xsd:boolean ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:saturday ;  rr:objectMap [ rr:column "sat" ; rr:datatype xsd:boolean ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:sunday ;    rr:objectMap [ rr:column "sun" ; rr:datatype xsd:boolean ] ] .
 
-## The class depends on a column value: an order with late days is typed
-## ul:LateOrder only, as in Session 2. Two small maps, one per class.
-<#OnTimeOrders>
-    rr:logicalTable [ rr:sqlQuery """
-        SELECT order_id FROM orders WHERE ship_late_day_count = 0""" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/order/brunel/{order_id}" ;
-                    rr:class ul:Order ] .
+## Stops: one row of stops.txt
+<#Stops>
+    rr:logicalTable [ rr:tableName "stops" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/stop/guelph/{stop_id}" ; rr:class gtfs:Stop ] ;
+    rr:predicateObjectMap [ rr:predicate rdfs:label ; rr:objectMap [ rr:column "stop_name" ] ] ;
+    rr:predicateObjectMap [ rr:predicate geo:lat ; rr:objectMap [ rr:column "stop_lat" ; rr:datatype xsd:decimal ] ] ;
+    rr:predicateObjectMap [ rr:predicate geo:long ; rr:objectMap [ rr:column "stop_lon" ; rr:datatype xsd:decimal ] ] .
 
-<#LateOrders>
-    rr:logicalTable [ rr:sqlQuery """
-        SELECT order_id FROM orders WHERE ship_late_day_count > 0""" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/order/brunel/{order_id}" ;
-                    rr:class ul:LateOrder ] .
-
-########################################################################
-## Carriers and customers: things that exist only as codes in other tables
-########################################################################
-
-## Every carrier code found in either table, typed once. Session 2 typed only
-## the carriers of orders (3); this view finds all 10.
-<#Carriers>
-    rr:logicalTable [ rr:sqlQuery """
-        SELECT carrier FROM orders
-        UNION
-        SELECT carrier FROM freight_rates""" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/carrier/brunel/{carrier}" ;
-                    rr:class ul:Carrier ] .
-
-<#Customers>
-    rr:logicalTable [ rr:sqlQuery """SELECT DISTINCT customer FROM orders""" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/customer/brunel/{customer}" ;
-                    rr:class ul:Customer ] .
-
-########################################################################
-## Plants, ports and products
-########################################################################
-
-<#PlantPorts>
-    rr:logicalTable [ rr:tableName "plant_ports" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/plant/brunel/{plant_code}" ;
-                    rr:class ul:Plant ] ;
-    rr:predicateObjectMap [ rr:predicate ul:servesPort ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/port/brunel/{port}" ] ] .
-
-<#Ports>
-    rr:logicalTable [ rr:tableName "plant_ports" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/port/brunel/{port}" ;
-                    rr:class ul:Port ] .
-
-<#ProductsPerPlant>
-    rr:logicalTable [ rr:tableName "products_per_plant" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/plant/brunel/{plant_code}" ] ;
-    rr:predicateObjectMap [ rr:predicate ul:makes ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/product/brunel/{product_id}" ] ] .
-
-<#Products>
-    rr:logicalTable [ rr:tableName "products_per_plant" ] ;
-    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/product/brunel/{product_id}" ;
-                    rr:class ul:Product ] .
-
-########################################################################
-## Freight rate bands: a row with no key of its own
-########################################################################
-
-## FreightRates has no key: 1,540 rows, only 1,258 different on (carrier,
-## ports, service, minimum weight), and 5 rows exactly equal to another row.
-## So a band is a blank node, one per row, told apart by the row number
-## (rate_id, added by load_database.py). It is never given a permanent IRI.
-<#RateBands>
-    rr:logicalTable [ rr:tableName "freight_rates" ] ;
-    rr:subjectMap [ rr:template "rate-band-{rate_id}" ; rr:termType rr:BlankNode ;
-                    rr:class ul:RateBand ] ;
-    rr:predicateObjectMap [ rr:predicate ul:bandCarrier ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/carrier/brunel/{carrier}" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:bandFrom ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/port/brunel/{orig_port_cd}" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:bandTo ;
-        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/port/brunel/{dest_port_cd}" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:bandService ;
-        rr:objectMap [ rr:column "svc_cd" ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:minWeight ;
-        rr:objectMap [ rr:column "minm_wgh_qty" ; rr:datatype xsd:decimal ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:maxWeight ;
-        rr:objectMap [ rr:column "max_wgh_qty" ; rr:datatype xsd:decimal ] ] ;
-    rr:predicateObjectMap [ rr:predicate ul:rate ;
-        rr:objectMap [ rr:column "rate" ; rr:datatype xsd:decimal ] ] .
+## Stop times: one row of stop_times.txt, "this trip is at this stop at this time".
+## Times stay text: GTFS allows hours past 24 (25:10:00), which xsd:time does not.
+<#StopTimes>
+    rr:logicalTable [ rr:tableName "stop_times" ] ;
+    rr:subjectMap [ rr:template "https://ul.edu.lb/kr/id/stoptime/guelph/{trip_id}-{stop_sequence}" ; rr:class gtfs:StopTime ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:trip ;
+        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/trip/guelph/{trip_id}" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:stop ;
+        rr:objectMap [ rr:template "https://ul.edu.lb/kr/id/stop/guelph/{stop_id}" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:stopSequence ; rr:objectMap [ rr:column "stop_sequence" ; rr:datatype xsd:integer ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:arrivalTime ; rr:objectMap [ rr:column "arrival_time" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:departureTime ; rr:objectMap [ rr:column "departure_time" ] ] ;
+    rr:predicateObjectMap [ rr:predicate gtfs:distanceTraveled ; rr:objectMap [ rr:column "shape_dist_traveled" ; rr:datatype xsd:decimal ] ] .

@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROUTES_TO_KEEP = {"1", "2", "99"}          # route_short_name values we keep
 RAW = Path(sys.argv[1])                    # the folder with the unzipped feed
-OUT = Path(__file__).resolve().parent / "gtfs-sample.sql"
+OUT = Path(__file__).resolve().parent / "example.sql"
 
 
 def read(name):
