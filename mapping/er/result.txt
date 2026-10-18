@@ -1,0 +1,9 @@
+104 GTFS stops, 451 OSM stops: 46,904 possible pairs, 255 within 100 m
+labelled (OSM ref = GTFS stop code, on exactly one OSM stop): 82 GTFS stops
+threshold 0.5: 74 matches, 70 right. precision 0.946, recall 0.854
+  wrong match  GTFS 1101 'Norfolk at Cork northbound' -> OSM 13913409817 (truth: OSM 11526077437)
+  wrong match  GTFS 1635 'Gosling at Clairfields northbound' -> OSM 13913373692 (truth: OSM 5247441297)
+  wrong match  GTFS 6067 'Macdonell at Wilson eastbound' -> OSM 13913409822 (truth: OSM 9592813837)
+  wrong match  GTFS 6095 '1750 Gordon southbound' -> OSM 12332601749 (truth: OSM 9592591637)
+threshold 0.8: 71 matches, 70 right. precision 0.986, recall 0.854
+  wrong match  GTFS 6067 'Macdonell at Wilson eastbound' -> OSM 13913409822 (truth: OSM 9592813837)
