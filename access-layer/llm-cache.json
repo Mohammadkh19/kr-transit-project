@@ -5,11 +5,11 @@
  },
  "101802a0e80b1c96": {
   "model": "gemini-3.5-flash-lite",
-  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(?route) AS ?routes) WHERE {\n  ?route a gtfs:Route .\n}"
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(?route) AS ?count) WHERE {\n  ?route a gtfs:Route .\n}"
  },
  "2256f976ff4b68b1": {
   "model": "gemini-3.5-flash-lite",
-  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(DISTINCT ?stop) AS ?stopCount) WHERE {\n  ?stopTime gtfs:trip/gtfs:route/gtfs:shortName \"99\" ;\n            gtfs:stop ?stop .\n}"
+  "reply": "PREFIX gtfs: <http://vocab.gtfs.org/terms#>\nSELECT (COUNT(DISTINCT ?stop) AS ?count) WHERE {\n  ?stopTime gtfs:trip/gtfs:route/gtfs:shortName \"99\" ;\n            gtfs:stop ?stop .\n}"
  },
  "227cbd91ba94472f": {
   "model": "gemini-3.5-flash-lite",
@@ -61,11 +61,11 @@
  },
  "d398820ec016a0aa": {
   "model": "gemini-3.5-flash-lite",
-  "reply": "REFUSE: routes serving a stop"
+  "reply": "REFUSE: route counts per stop"
  },
  "d3cb07c6f70841cc": {
   "model": "gemini-3.5-flash-lite",
-  "reply": "REFUSE: people"
+  "reply": "REFUSE: drivers"
  },
  "efcc380469242ca6": {
   "model": "gemini-3.5-flash-lite",
