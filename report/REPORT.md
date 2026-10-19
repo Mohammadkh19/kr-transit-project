@@ -1,9 +1,7 @@
 # Technical report: a knowledge graph of Guelph Transit bus timetables
 
-At most 16 pages, the open problem included. It documents what was
-deployed, not what was planned. Section 9 and the
-references feed the "Report and open problem" mark; sections 3 to 7 are
-what the instructor reads while checking each layer. Quote only numbers that a file in this repository holds.
+Mohammad Khashab, Knowledge Representation (MSc), Lebanese University. October 2026.
+Repository: https://github.com/Mohammadkh19/kr-transit-project
 
 ## 1. Problem framing and scope
 
@@ -364,7 +362,15 @@ data at step 5.
   pipeline/Dockerfile.
 - The reasoner script failed on Windows: owlready2 could not open a file
   given as a file:// address. It now opens the file and passes its content.
-- [CLEAN CHECKOUT RESULT: fill in after the test on Tuesday]
+- Clean checkout on 2026-10-19: cloned main into an empty folder, added .env,
+  ran docker compose up --build. The pipeline mapped 17,319 triples, the gate
+  gave 0 Violation and 2,356 Warning, the VoID had 147 triples, and Fuseki was
+  loaded. The access layer answered "Which routes run on Sunday?" and refused
+  "How much does a bus ticket cost?" (REFUSE: fares).
+- One trap found: a second copy of the stack on the same computer failed with
+  "port is already allocated", because the first copy's access layer restarts
+  by itself (restart: unless-stopped). Only one copy can run at a time; stop
+  the other with docker compose down.
 
 **The Session 7 checklist.**
 - One command from a clean checkout: yes (see above).
