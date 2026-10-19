@@ -1,0 +1,3472 @@
+<!DOCTYPE html>
+<!-- saved from url=(0083)https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>GTFS Schedule Validation Report</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <script src="./GTFS Schedule Validation Report_files/jquery-3.6.0.min.js.download"></script>
+    <script src="./GTFS Schedule Validation Report_files/jquery-ui.js.download"></script>
+    <script>
+      $(document).ready(function () {
+        $(document).tooltip();
+      });
+    </script>
+    <style>
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        min-width: 800px;
+        padding: 1em 2em;
+    }
+
+    .error:before {
+        content: "\1F534  ";
+    }
+
+    .warning:before {
+        content: "\1F7E0  ";
+    }
+
+    .info:before {
+        content: "\26AA  ";
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .version-update {
+        font-weight: bold;
+        color: red;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    table caption {
+        text-align: left;
+        margin: 0.5em 0;
+    }
+
+    table th {
+        text-align: left;
+        border-bottom: 2px solid #000;
+        padding: 0.5em;
+        white-space: nowrap;
+    }
+
+    table td {
+        border-bottom: 1px solid #ddd;
+        padding: 0.5em;
+    }
+
+    .desc-content {
+        padding: 0.5em;
+        border-bottom: 5px solid #000;
+        border-top: 5px solid #000;
+    }
+
+    .desc-content h3 {
+        margin-top: 0;
+    }
+
+    .summary {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .summary-row {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .summary-cell {
+        padding: 5px;
+        box-sizing: border-box;
+        flex: 1;
+    }
+
+    .summary h4 {
+        white-space: nowrap;
+    }
+
+    .summary dt,
+    .summary dd {
+        display: inline-block;
+    }
+
+    .summary dd {
+        font-weight: bold;
+        width: 130px;
+        margin-inline-start: 0;
+    }
+
+    .summary ul,
+    .summary ol {
+        padding-left: 20px;
+    }
+
+    .summary li {
+        padding-left: 0px;
+    }
+
+    hr {
+        border: none;
+        border-top: 2px solid #000;
+        margin-top: 5px;
+        margin-bottom: 15px;
+    }
+
+    .spec-feature {
+        background-color: #d4d4d4;
+        padding: 2px 5px;
+        margin-right: 2px;
+        margin-bottom: 2px;
+        text-align: center;
+    }
+
+    .tooltip {
+        text-decoration: none;
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .tooltip .tooltiptext {
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        max-width: 400px;
+        min-width: 100px;
+        width: max-content;
+        white-space: normal;
+    }
+
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        cursor: help;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* Responsive behavior */
+    @media (max-width: 767px) {
+        .summary .summary_info,
+        .summary .summary_list {
+            flex-basis: 100%;
+        }
+    }
+
+    table.accordion > tbody > tr.notice td,
+    table.accordion > tbody > tr.view th {
+        cursor: auto;
+    }
+
+    table.accordion > tbody > tr.notice td:first-child,
+    table.accordion > tbody > tr.notice th:first-child {
+        position: relative;
+        padding-left: 20px;
+    }
+
+    table.accordion > tbody > tr.notice td:first-child:before,
+    table.accordion > tbody > tr.notice th:first-child:before {
+        position: absolute;
+        top: 50%;
+        left: 5px;
+        width: 9px;
+        height: 16px;
+        margin-top: -8px;
+        color: #000;
+        content: "+";
+    }
+
+    table.accordion > tbody > tr.notice.open td:first-child:before,
+    table.accordion > tbody > tr.notice.open th:first-child:before {
+        content: "\2013";
+    }
+
+    table.accordion > tbody > tr.notice:hover {
+        background: #ddd;
+    }
+
+    table.accordion > tbody > tr.notice.open {
+        background: #ddd;
+        color: black;
+    }
+
+    table.accordion > tbody > tr.description {
+        display: none;
+    }
+
+    table.accordion > tbody > tr.description.open {
+        display: table-row;
+    }
+
+    #gtfs-features-container > div {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-wrap: wrap;
+    }
+</style>
+
+</head>
+<body>
+    <h1>GTFS Schedule Validation Report</h1>
+    <p>This report was generated by the <a href="https://github.com/MobilityData/gtfs-validator">Canonical GTFS Schedule
+        validator</a>,
+        <span>version 8.0.0</span> at <span>2026-05-11T16:17:24Z</span>,
+        <br>
+        for the dataset
+        <span>file:/tmp/gtfs-validator-temp7507631821195194796/c0ae945d-0652-488c-8ee0-009558597a0c9516767582326423194.zip</span><span>. No country code was provided.</span>
+        <br>
+        </p>
+
+    <p>Use this report alongside our <a href="https://gtfs-validator.mobilitydata.org/rules.html">documentation</a>.</p>
+
+    
+
+    <h2>Summary</h2>
+
+    <div class="summary">
+        <div class="summary-row">
+            <div class="summary-cell summary_info">
+                <h4>Agencies included</h4>
+                <hr>
+                <ul>
+                    <li>
+                        <span>Guelph Transit</span>
+                        <ul>
+                            <li><b>website: </b><a href="http://www.guelphtransit.ca/">http://www.guelphtransit.ca</a></li>
+                            <li><b>phone number: </b><span></span></li>
+                            <li><b>email: </b><span>Not provided</span></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="summary-cell summary_info">
+                <h4>Feed Info</h4>
+                <hr>
+                <dl>
+                    <div>
+                        <div>
+                            <dd>Publisher Name:</dd>
+                            <dt>
+                            
+                                <span>N/A</span>
+                                <span></span>
+                                
+                            </dt>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <dd>Publisher URL:</dd>
+                            <dt>
+                            
+                                <span>N/A</span>
+                                
+                                
+                            </dt>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <dd>Feed Email:</dd>
+                            <dt>
+                            
+                                <span>N/A</span>
+                                <span></span>
+                                
+                            </dt>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <dd>Feed Language:</dd>
+                            <dt>
+                            
+                                <span>N/A</span>
+                                <span></span>
+                                
+                            </dt>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <dd>Service Window:</dd>
+                            <dt>
+                            
+                                
+                                <span>2026-01-04 to 2026-05-02</span>
+                                <span>
+                                     <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                        <span class="tooltiptext" style="transform: translateX(-100%)">The range of service dates covered by the feed, based on trips with an associated service_id in calendar.txt and/or calendar_dates.txt</span>
+                                    </a>
+                                </span>
+                            </dt>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            
+                            
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            
+                            
+                        </div>
+                    </div>
+                </dl>
+            </div>
+            <div class="summary-cell summary_list">
+                <h4>Files included</h4>
+                <hr>
+                <ol>
+                    <li>agency.txt</li>
+                    <li>calendar.txt</li>
+                    <li>calendar_dates.txt</li>
+                    <li>google.log</li>
+                    <li>routes.txt</li>
+                    <li>shapes.txt</li>
+                    <li>stop_times.txt</li>
+                    <li>stops.txt</li>
+                    <li>trips.txt</li>
+                </ol>
+            </div>
+            <div class="summary-cell summary_list">
+                <h4>Counts</h4>
+                <hr>
+                <ul>
+                    <li><span>Agencies: 1</span></li>
+                    <li><span>Blocks: 176</span></li>
+                    <li><span>Routes: 35</span></li>
+                    <li><span>Shapes: 110</span></li>
+                    <li><span>Stops: 628</span></li>
+                    <li><span>Trips: 5201</span></li>
+                </ul>
+            </div>
+            <div class="summary-cell summary_list" id="gtfs-features-container">
+                <h4>
+                    GTFS Features included
+                    <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                        <span class="tooltiptext" style="transform: translateX(-100%)">GTFS features provide a standardized vocabulary to define and describe features that are officially adopted in GTFS.</span>
+                    </a>
+                </h4>
+                <hr>
+                <div>
+                    <span class="spec-feature">
+                        <a href="https://gtfs.org/getting_started/features/base_add-ons/#shapes" target="_blank">Shapes</a>
+                    </span><span class="spec-feature">
+                        <a href="https://gtfs.org/getting_started/features/base_add-ons/#route-colors" target="_blank">Route Colors</a>
+                    </span><span class="spec-feature">
+                        <a href="https://gtfs.org/getting_started/features/base_add-ons/#headsigns" target="_blank">Headsigns</a>
+                    </span><span class="spec-feature">
+                        <a href="https://gtfs.org/getting_started/features/accessibility/#stops-wheelchair-accessibility" target="_blank">Stops Wheelchair Accessibility</a>
+                    </span><span class="spec-feature">
+                        <a href="https://gtfs.org/getting_started/features/accessibility/#trips-wheelchair-accessibility" target="_blank">Trips Wheelchair Accessibility</a>
+                    </span><span class="spec-feature">
+                        <a href="https://gtfs.org/getting_started/features/base_add-ons/#bike-allowed" target="_blank">Bike Allowed</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h2>Specification Compliance report</h2>
+
+    <h3><span>176</span> notices reported
+        (<span>96</span> errors,
+        <span>79</span> warnings,
+        <span>1</span> infos)
+    </h3>
+
+    <span>
+            <span>
+                </span></span><span>
+            <span>
+                </span></span><span>
+                </span><span>
+                </span><span>
+                </span><span>
+                </span><span>
+                </span><span>
+                </span><span>
+                </span><span>
+                </span><span>
+                </span><span>
+                </span><span>
+            <span>
+                </span></span><table class="accordion">
+        <thead>
+        <tr>
+            <th>Notice Code</th>
+            <th>Severity</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="notice">
+                    <td>decreasing_or_equal_stop_time_distance</td>
+                    <td class="error">ERROR</td>
+                    <td>96</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>decreasing_or_equal_stop_time_distance</h3>
+                            <p></p><p>Decreasing or equal <code>shape_dist_traveled</code> in <code>stop_times.txt</code>.</p>
+<p>When sorted by <code>stop_times.stop_sequence</code>, two consecutive entries in <code>stop_times.txt</code>
+should have increasing distance, based on the field <code>shape_dist_traveled</code>. If the values are
+equal, this is considered as an error.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#decreasing_or_equal_stop_time_distance-rule">here</a>.
+                            </p>
+                             <p>Only the first 50 of <span>96</span> affected records are displayed below.</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>tripId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the faulty trip.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the faulty stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>csvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number from `stop_times.txt`.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>shapeDistTraveled</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">Actual distance traveled along the shape from the first shape point to the faulty record.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopSequence</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The faulty record's `stop_times.stop_sequence`.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>prevCsvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number from `stop_times.txt` of the previous stop time.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>prevShapeDistTraveled</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">Actual distance traveled along the shape from the first shape point to the previous stop
+time.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>prevStopSequence</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The previous record's `stop_times.stop_sequence`.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>"466688"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63969</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63968</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466689"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63986</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63985</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466686"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63935</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63934</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466687"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63952</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63951</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466695"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64298</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64297</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466696"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64315</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64314</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466693"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64264</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64263</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466694"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64281</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64280</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466691"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64020</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64019</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466692"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64037</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64036</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466690"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64003</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64002</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466699"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64366</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64365</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466697"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64332</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64331</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466698"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>64349</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>64348</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466668"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86829</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86828</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466669"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86846</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86845</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466666"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86795</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86794</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466667"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86812</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86811</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466664"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86761</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86760</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466665"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86778</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86777</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466673"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63714</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63713</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466674"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63731</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63730</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466671"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63680</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63679</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466672"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63697</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63696</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466670"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86863</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86862</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466679"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63816</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63815</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466677"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63782</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63781</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466678"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63799</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63798</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466675"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63748</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63747</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466676"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63765</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63764</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466684"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63901</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63900</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466685"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63918</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63917</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466682"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63867</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63866</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466683"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63884</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63883</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466680"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63833</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63832</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466681"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>63850</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>63849</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466651"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86315</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86314</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466652"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86332</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86331</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466659"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86676</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86675</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466657"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86642</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86641</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466658"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86659</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86658</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466655"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86383</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86382</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466656"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86625</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86624</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466653"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86349</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86348</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466654"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86366</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86365</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466662"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86727</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86726</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466663"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86744</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86743</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466660"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86693</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86692</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466661"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>86710</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>86709</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"466745"</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>22278</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>22277</td>
+                                        
+                                            <td>1.0759</td>
+                                        
+                                            <td>4</td>
+                                        
+                                    </tr>
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            
+        <tr class="notice">
+                    <td>expired_calendar</td>
+                    <td class="warning">WARNING</td>
+                    <td>3</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>expired_calendar</h3>
+                            <p></p><p>Dataset should not contain date ranges for services that have already expired.</p>
+<p>This warning takes into account the <code>calendar_dates.txt</code> file as well as the <code>calendar.txt</code>
+file.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#expired_calendar-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>csvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row of the faulty record.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>serviceId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The service id of the faulty record.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>2</td>
+                                        
+                                            <td>"1"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>3</td>
+                                        
+                                            <td>"2"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>"3"</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>fast_travel_between_consecutive_stops</td>
+                    <td class="warning">WARNING</td>
+                    <td>16</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>fast_travel_between_consecutive_stops</h3>
+                            <p></p><p>A transit vehicle moves too fast between two consecutive stops.</p>
+<p>The speed threshold depends on route type:</p>
+<table style="width: auto; table-layout: auto;">
+     <tbody><tr>
+       <th>Route type</th>
+       <th>Description</th>
+       <th>Threshold, km/h</th>
+     </tr>
+     <tr>
+       <td>0</td>
+       <td>Light rail</td>
+       <td>100</td>
+     </tr>
+     <tr>
+       <td>1</td>
+       <td>Subway</td>
+       <td>150</td>
+     </tr>
+     <tr>
+       <td>2</td>
+       <td>Rail</td>
+       <td>500</td>
+     </tr>
+     <tr>
+       <td>3</td>
+       <td>Bus</td>
+       <td>150</td>
+     </tr>
+     <tr>
+       <td>4</td>
+       <td>Ferry</td>
+       <td>80</td>
+     </tr>
+     <tr>
+       <td>5</td>
+       <td>Cable tram</td>
+       <td>30</td>
+     </tr>
+     <tr>
+       <td>6</td>
+       <td>Aerial lift</td>
+       <td>50</td>
+     </tr>
+     <tr>
+       <td>7</td>
+       <td>Funicular</td>
+       <td>50</td>
+     </tr>
+     <tr>
+       <td>11</td>
+       <td>Trolleybus</td>
+       <td>150</td>
+     </tr>
+     <tr>
+       <td>12</td>
+       <td>Monorail</td>
+       <td>150</td>
+     </tr>
+     <tr>
+       <td>-</td>
+       <td>Unknown</td>
+       <td>200</td>
+     </tr>
+   </tbody></table>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#fast_travel_between_consecutive_stops-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>tripCsvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the problematic trip.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>tripId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`trip_id` of the problematic trip.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>routeId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`route_id` of the problematic trip.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>speedKph</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">Travel speed (km/h).</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>distanceKm</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">Distance between stops (km).</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>csvRowNumber1</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the first stop time.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopSequence1</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`stop_sequence` of the first stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopId1</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`stop_id` of the first stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopName1</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`stop_name` of the first stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>departureTime1</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`departure_time` of the first stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>csvRowNumber2</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the second stop time.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopSequence2</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`stop_sequence` of the second stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopId2</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`stop_id` of the second stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopName2</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`stop_name` of the second stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>arrivalTime2</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">`arrival_time` of the second stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>2443</td>
+                                        
+                                            <td>"469085"</td>
+                                        
+                                            <td>"2883"</td>
+                                        
+                                            <td>1760.9607936353618</td>
+                                        
+                                            <td>0.48915577600982274</td>
+                                        
+                                            <td>42689</td>
+                                        
+                                            <td>2</td>
+                                        
+                                            <td>"802"</td>
+                                        
+                                            <td>"Wellington at Wyndham westbound"</td>
+                                        
+                                            <td>"25:08:44"</td>
+                                        
+                                            <td>42690</td>
+                                        
+                                            <td>3</td>
+                                        
+                                            <td>"1602"</td>
+                                        
+                                            <td>"Gordon at Water southbound"</td>
+                                        
+                                            <td>"25:08:45"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4212</td>
+                                        
+                                            <td>"469095"</td>
+                                        
+                                            <td>"2883"</td>
+                                        
+                                            <td>1760.9607936353618</td>
+                                        
+                                            <td>0.48915577600982274</td>
+                                        
+                                            <td>42689</td>
+                                        
+                                            <td>2</td>
+                                        
+                                            <td>"802"</td>
+                                        
+                                            <td>"Wellington at Wyndham westbound"</td>
+                                        
+                                            <td>"25:08:44"</td>
+                                        
+                                            <td>42690</td>
+                                        
+                                            <td>3</td>
+                                        
+                                            <td>"1602"</td>
+                                        
+                                            <td>"Gordon at Water southbound"</td>
+                                        
+                                            <td>"25:08:45"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2443</td>
+                                        
+                                            <td>"469085"</td>
+                                        
+                                            <td>"2883"</td>
+                                        
+                                            <td>579.9216309264125</td>
+                                        
+                                            <td>0.16108934192400348</td>
+                                        
+                                            <td>42690</td>
+                                        
+                                            <td>3</td>
+                                        
+                                            <td>"1602"</td>
+                                        
+                                            <td>"Gordon at Water southbound"</td>
+                                        
+                                            <td>"25:08:45"</td>
+                                        
+                                            <td>42691</td>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>"203"</td>
+                                        
+                                            <td>"Gordon at James southbound"</td>
+                                        
+                                            <td>"25:08:46"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4212</td>
+                                        
+                                            <td>"469095"</td>
+                                        
+                                            <td>"2883"</td>
+                                        
+                                            <td>579.9216309264125</td>
+                                        
+                                            <td>0.16108934192400348</td>
+                                        
+                                            <td>42690</td>
+                                        
+                                            <td>3</td>
+                                        
+                                            <td>"1602"</td>
+                                        
+                                            <td>"Gordon at Water southbound"</td>
+                                        
+                                            <td>"25:08:45"</td>
+                                        
+                                            <td>42691</td>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>"203"</td>
+                                        
+                                            <td>"Gordon at James southbound"</td>
+                                        
+                                            <td>"25:08:46"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2443</td>
+                                        
+                                            <td>"469085"</td>
+                                        
+                                            <td>"2883"</td>
+                                        
+                                            <td>1829.2936031282266</td>
+                                        
+                                            <td>0.508137111980063</td>
+                                        
+                                            <td>42691</td>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>"203"</td>
+                                        
+                                            <td>"Gordon at James southbound"</td>
+                                        
+                                            <td>"25:08:46"</td>
+                                        
+                                            <td>42692</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>"204"</td>
+                                        
+                                            <td>"Gordon at Dean southbound"</td>
+                                        
+                                            <td>"25:08:47"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4212</td>
+                                        
+                                            <td>"469095"</td>
+                                        
+                                            <td>"2883"</td>
+                                        
+                                            <td>1829.2936031282266</td>
+                                        
+                                            <td>0.508137111980063</td>
+                                        
+                                            <td>42691</td>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>"203"</td>
+                                        
+                                            <td>"Gordon at James southbound"</td>
+                                        
+                                            <td>"25:08:46"</td>
+                                        
+                                            <td>42692</td>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>"204"</td>
+                                        
+                                            <td>"Gordon at Dean southbound"</td>
+                                        
+                                            <td>"25:08:47"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2411</td>
+                                        
+                                            <td>"469048"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42435</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"26:24:23"</td>
+                                        
+                                            <td>42436</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"26:24:28"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4189</td>
+                                        
+                                            <td>"469058"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42435</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"26:24:23"</td>
+                                        
+                                            <td>42436</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"26:24:28"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2412</td>
+                                        
+                                            <td>"469049"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42449</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"26:44:23"</td>
+                                        
+                                            <td>42450</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"26:44:28"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4190</td>
+                                        
+                                            <td>"469059"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42449</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"26:44:23"</td>
+                                        
+                                            <td>42450</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"26:44:28"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2408</td>
+                                        
+                                            <td>"469045"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42393</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"25:24:23"</td>
+                                        
+                                            <td>42394</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"25:24:28"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4186</td>
+                                        
+                                            <td>"469055"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42393</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"25:24:23"</td>
+                                        
+                                            <td>42394</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"25:24:28"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2410</td>
+                                        
+                                            <td>"469047"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42421</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"26:04:23"</td>
+                                        
+                                            <td>42422</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"26:04:28"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4188</td>
+                                        
+                                            <td>"469057"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42421</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"26:04:23"</td>
+                                        
+                                            <td>42422</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"26:04:28"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2409</td>
+                                        
+                                            <td>"469046"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42407</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"25:44:23"</td>
+                                        
+                                            <td>42408</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"25:44:28"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4187</td>
+                                        
+                                            <td>"469056"</td>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>262.9287755417698</td>
+                                        
+                                            <td>0.3651788549191247</td>
+                                        
+                                            <td>42407</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"1614"</td>
+                                        
+                                            <td>"Gordon at Lowes southbound"</td>
+                                        
+                                            <td>"25:44:23"</td>
+                                        
+                                            <td>42408</td>
+                                        
+                                            <td>13</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>"25:44:28"</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>missing_recommended_file</td>
+                    <td class="warning">WARNING</td>
+                    <td>1</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>missing_recommended_file</h3>
+                            <p></p><p>A recommended file is missing.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#missing_recommended_file-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>filename</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The name of the faulty file.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>"feed_info.txt"</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>route_color_contrast</td>
+                    <td class="warning">WARNING</td>
+                    <td>11</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>route_color_contrast</h3>
+                            <p></p><p>Insufficient route color contrast.</p>
+<p>A route's color and <code>route_text_color</code> should be contrasting.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#route_color_contrast-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>routeId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the faulty record.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>csvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the faulty record.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>routeColor</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The faulty record's HTML route color.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>routeTextColor</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The faulty record's HTML route text color.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>"2845"</td>
+                                        
+                                            <td>6</td>
+                                        
+                                            <td>"#811167"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2851"</td>
+                                        
+                                            <td>12</td>
+                                        
+                                            <td>"#0000FF"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2856"</td>
+                                        
+                                            <td>17</td>
+                                        
+                                            <td>"#921B1E"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2867"</td>
+                                        
+                                            <td>28</td>
+                                        
+                                            <td>"#0000FF"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2868"</td>
+                                        
+                                            <td>29</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2869"</td>
+                                        
+                                            <td>30</td>
+                                        
+                                            <td>"#0000FF"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2870"</td>
+                                        
+                                            <td>31</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2871"</td>
+                                        
+                                            <td>32</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2873"</td>
+                                        
+                                            <td>33</td>
+                                        
+                                            <td>"#0000FF"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2881"</td>
+                                        
+                                            <td>34</td>
+                                        
+                                            <td>"#0000FF"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"2883"</td>
+                                        
+                                            <td>35</td>
+                                        
+                                            <td>"#0000FF"</td>
+                                        
+                                            <td>"#000000"</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>service_has_no_active_day_of_the_week</td>
+                    <td class="warning">WARNING</td>
+                    <td>1</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>service_has_no_active_day_of_the_week</h3>
+                            <p></p><p>A service is not valid for any day of the week.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#service_has_no_active_day_of_the_week-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>csvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number in calendar.txt where the error occurs.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>serviceId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The service_id field value.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>5</td>
+                                        
+                                            <td>"7"</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>stop_too_far_from_shape</td>
+                    <td class="warning">WARNING</td>
+                    <td>11</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>stop_too_far_from_shape</h3>
+                            <p></p><p>Stop too far from trip shape.</p>
+<p>Per GTFS Best Practices, route alignments (in <code>shapes.txt</code>) should be within 100 meters of
+stop locations which a trip serves. This potentially indicates a problem with the location of
+the stop or the path of the shape.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#stop_too_far_from_shape-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>tripCsvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the faulty record from `trips.txt`.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>shapeId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the shape that is referred to.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>tripId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the trip that is referred to.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopTimeCsvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the faulty record from `stop_times.txt`.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the stop that is referred to.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopName</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The name of the stop that is referred to.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>match</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">Latitude and longitude pair of the location.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>geoDistanceToShape</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">Distance from stop to shape.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>2443</td>
+                                        
+                                            <td>"9065"</td>
+                                        
+                                            <td>"469085"</td>
+                                        
+                                            <td>42688</td>
+                                        
+                                            <td>"801"</td>
+                                        
+                                            <td>"Wyndham at Fountain southbound"</td>
+                                        
+                                            <td>[43.530007000000005,-80.225834]</td>
+                                        
+                                            <td>2197.797758577659</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2443</td>
+                                        
+                                            <td>"9065"</td>
+                                        
+                                            <td>"469085"</td>
+                                        
+                                            <td>42689</td>
+                                        
+                                            <td>"802"</td>
+                                        
+                                            <td>"Wellington at Wyndham westbound"</td>
+                                        
+                                            <td>[43.530007000000005,-80.225834]</td>
+                                        
+                                            <td>1999.2431214797534</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2443</td>
+                                        
+                                            <td>"9065"</td>
+                                        
+                                            <td>"469085"</td>
+                                        
+                                            <td>42690</td>
+                                        
+                                            <td>"1602"</td>
+                                        
+                                            <td>"Gordon at Water southbound"</td>
+                                        
+                                            <td>[43.530007000000005,-80.225834]</td>
+                                        
+                                            <td>1555.328961531211</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2443</td>
+                                        
+                                            <td>"9065"</td>
+                                        
+                                            <td>"469085"</td>
+                                        
+                                            <td>42691</td>
+                                        
+                                            <td>"203"</td>
+                                        
+                                            <td>"Gordon at James southbound"</td>
+                                        
+                                            <td>[43.530007000000005,-80.225834]</td>
+                                        
+                                            <td>1395.9605148165433</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2443</td>
+                                        
+                                            <td>"9065"</td>
+                                        
+                                            <td>"469085"</td>
+                                        
+                                            <td>42692</td>
+                                        
+                                            <td>"204"</td>
+                                        
+                                            <td>"Gordon at Dean southbound"</td>
+                                        
+                                            <td>[43.530007000000005,-80.225834]</td>
+                                        
+                                            <td>898.2301524728775</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2443</td>
+                                        
+                                            <td>"9065"</td>
+                                        
+                                            <td>"469085"</td>
+                                        
+                                            <td>42693</td>
+                                        
+                                            <td>"356"</td>
+                                        
+                                            <td>"Gordon at College southbound"</td>
+                                        
+                                            <td>[43.529958,-80.225872]</td>
+                                        
+                                            <td>511.85568628507707</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2249</td>
+                                        
+                                            <td>"9021"</td>
+                                        
+                                            <td>"455103"</td>
+                                        
+                                            <td>37705</td>
+                                        
+                                            <td>"5852"</td>
+                                        
+                                            <td>"Guelph Central Station Platform 7"</td>
+                                        
+                                            <td>[43.544784,-80.248091]</td>
+                                        
+                                            <td>224.9396314328659</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4023</td>
+                                        
+                                            <td>"9022"</td>
+                                        
+                                            <td>"455345"</td>
+                                        
+                                            <td>71124</td>
+                                        
+                                            <td>"5852"</td>
+                                        
+                                            <td>"Guelph Central Station Platform 7"</td>
+                                        
+                                            <td>[43.544784,-80.248091]</td>
+                                        
+                                            <td>224.9396314328659</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2262</td>
+                                        
+                                            <td>"9034"</td>
+                                        
+                                            <td>"455146"</td>
+                                        
+                                            <td>38093</td>
+                                        
+                                            <td>"5852"</td>
+                                        
+                                            <td>"Guelph Central Station Platform 7"</td>
+                                        
+                                            <td>[43.544652,-80.24709]</td>
+                                        
+                                            <td>163.39008883632945</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2392</td>
+                                        
+                                            <td>"9032"</td>
+                                        
+                                            <td>"455245"</td>
+                                        
+                                            <td>41971</td>
+                                        
+                                            <td>"5852"</td>
+                                        
+                                            <td>"Guelph Central Station Platform 7"</td>
+                                        
+                                            <td>[43.544784,-80.248091]</td>
+                                        
+                                            <td>224.9396314328659</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2400</td>
+                                        
+                                            <td>"9031"</td>
+                                        
+                                            <td>"455255"</td>
+                                        
+                                            <td>42217</td>
+                                        
+                                            <td>"5852"</td>
+                                        
+                                            <td>"Guelph Central Station Platform 7"</td>
+                                        
+                                            <td>[43.544652,-80.24709]</td>
+                                        
+                                            <td>163.39008883632945</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>stop_too_far_from_shape_using_user_distance</td>
+                    <td class="warning">WARNING</td>
+                    <td>3</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>stop_too_far_from_shape_using_user_distance</h3>
+                            <p></p><p>Stop time too far from shape.</p>
+<p>A stop time entry that is a large distance away from the location of the shape in
+<code>shapes.txt</code> as defined by <code>shape_dist_traveled</code> values.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#stop_too_far_from_shape_using_user_distance-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>tripCsvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the faulty record from `trips.txt`.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>shapeId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the shape that is referred to.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>tripId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the trip that is referred to.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopTimeCsvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the faulty record from `stop_times.txt`.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the stop that is referred to.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopName</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The name of the stop that is referred to.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>match</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">Latitude and longitude pair of the location.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>geoDistanceToShape</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">Distance from stop to shape.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>2444</td>
+                                        
+                                            <td>"9064"</td>
+                                        
+                                            <td>"469086"</td>
+                                        
+                                            <td>42710</td>
+                                        
+                                            <td>"5836"</td>
+                                        
+                                            <td>"University Centre North Loop Platform 7"</td>
+                                        
+                                            <td>[43.526673,-80.224753]</td>
+                                        
+                                            <td>328.00149262371946</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>1215</td>
+                                        
+                                            <td>"9198"</td>
+                                        
+                                            <td>"466709"</td>
+                                        
+                                            <td>21531</td>
+                                        
+                                            <td>"5811"</td>
+                                        
+                                            <td>"Royal Canadian Legion"</td>
+                                        
+                                            <td>[43.56003900000001,-80.205955]</td>
+                                        
+                                            <td>177.34960348732895</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2408</td>
+                                        
+                                            <td>"9043"</td>
+                                        
+                                            <td>"469045"</td>
+                                        
+                                            <td>42394</td>
+                                        
+                                            <td>"1636"</td>
+                                        
+                                            <td>"Gordon at Clairfields northbound"</td>
+                                        
+                                            <td>[43.50860200000001,-80.195568]</td>
+                                        
+                                            <td>329.9539808996499</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>stop_without_stop_time</td>
+                    <td class="warning">WARNING</td>
+                    <td>5</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>stop_without_stop_time</h3>
+                            <p></p><p>A stop in <code>stops.txt</code> is not referenced by any <code>stop_times.stop_id</code>.</p>
+<p>Such stops are not used by any trip and normally do not provide user value. This notice may
+indicate a typo in <code>stop_times.txt</code>.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#stop_without_stop_time-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>csvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the faulty record.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The id of the faulty stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>stopName</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The name of the faulty stop.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>462</td>
+                                        
+                                            <td>"5835"</td>
+                                        
+                                            <td>"Guelph Central Station Platform 14"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>565</td>
+                                        
+                                            <td>"6104"</td>
+                                        
+                                            <td>"Brothers Brewing Company"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>566</td>
+                                        
+                                            <td>"6105"</td>
+                                        
+                                            <td>"Fixed Gear Brewing Co"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>567</td>
+                                        
+                                            <td>"6106"</td>
+                                        
+                                            <td>"Wellington Brewery"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>568</td>
+                                        
+                                            <td>"6109"</td>
+                                        
+                                            <td>"Royal City Brewing Co"</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>trip_coverage_not_active_for_next7_days</td>
+                    <td class="warning">WARNING</td>
+                    <td>1</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>trip_coverage_not_active_for_next7_days</h3>
+                            <p></p><p>Trips data should be valid for at least the next seven days.</p>
+<p>This notice is triggered if the date range where a significant number of trips are running
+ends in less than 7 days.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#trip_coverage_not_active_for_next7_days-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>currentDate</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">Current date (YYYYMMDD format).</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>serviceWindowStartDate</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The start date of the majority service window.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>serviceWindowEndDate</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The end date of the majority service window.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>"20260511"</td>
+                                        
+                                            <td>"20260105"</td>
+                                        
+                                            <td>"20260501"</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>unusable_trip</td>
+                    <td class="warning">WARNING</td>
+                    <td>21</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>unusable_trip</h3>
+                            <p></p><p>Trips must have more than one stop to be usable.</p>
+<p>A trip must visit more than one stop in stop_times.txt to be usable by passengers for
+boarding and alighting.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#unusable_trip-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>csvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the faulty record.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>tripId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The faulty record's id.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>2418</td>
+                                        
+                                            <td>"456115"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2419</td>
+                                        
+                                            <td>"456116"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2420</td>
+                                        
+                                            <td>"456117"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2421</td>
+                                        
+                                            <td>"456118"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2422</td>
+                                        
+                                            <td>"456121"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2423</td>
+                                        
+                                            <td>"456124"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2424</td>
+                                        
+                                            <td>"456123"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2425</td>
+                                        
+                                            <td>"456125"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2426</td>
+                                        
+                                            <td>"456122"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2427</td>
+                                        
+                                            <td>"456126"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2428</td>
+                                        
+                                            <td>"456129"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2429</td>
+                                        
+                                            <td>"456130"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2430</td>
+                                        
+                                            <td>"456128"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2431</td>
+                                        
+                                            <td>"456131"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>2432</td>
+                                        
+                                            <td>"456127"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4196</td>
+                                        
+                                            <td>"456119"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4197</td>
+                                        
+                                            <td>"456120"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4198</td>
+                                        
+                                            <td>"456133"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4199</td>
+                                        
+                                            <td>"456132"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4200</td>
+                                        
+                                            <td>"456135"</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>4201</td>
+                                        
+                                            <td>"456134"</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            <tr class="notice">
+                    <td>unused_shape</td>
+                    <td class="warning">WARNING</td>
+                    <td>6</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>unused_shape</h3>
+                            <p></p><p>Shape is not used in GTFS file <code>trips.txt</code>.</p>
+<p>All records defined by GTFS <code>shapes.txt</code> should be used in <code>trips.txt</code>.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#unused_shape-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>shapeId</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The faulty record's id.</span>
+                                                </a>
+                                            </th>
+                                        
+                                            <th>
+                                                <span>csvRowNumber</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The row number of the faulty record.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>"9039"</td>
+                                        
+                                            <td>7047</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"9040"</td>
+                                        
+                                            <td>7257</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"9041"</td>
+                                        
+                                            <td>7818</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"9042"</td>
+                                        
+                                            <td>8379</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"9230"</td>
+                                        
+                                            <td>15040</td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        
+                                            <td>"9231"</td>
+                                        
+                                            <td>15378</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            
+        <tr class="notice">
+                    <td>unknown_file</td>
+                    <td class="info">INFO</td>
+                    <td>1</td>
+                </tr>
+                <tr class="description">
+                    <td colspan="4">
+                        <div class="desc-content">
+                            <h3>unknown_file</h3>
+                            <p></p><p>A file is unknown.</p>
+<p></p>
+                            <p> You can see more about this notice <a href="https://gtfs-validator.mobilitydata.org/rules.html#unknown_file-rule">here</a>.
+                            </p>
+                             
+                            <table>
+                                <thead>
+                                    <tr>
+                                        
+                                            <th>
+                                                <span>filename</span>
+                                                <a href="https://files.mobilitydatabase.org/mdb-3140/mdb-3140-202605111616/report_8.0.0.html#" class="tooltip" onclick="event.preventDefault();"><span>(?)</span>
+                                                    <span class="tooltiptext">The name of the unknown file.</span>
+                                                </a>
+                                            </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        
+                                            <td>"google.log"</td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            
+        
+        </tbody>
+    </table>
+    <br>
+    <footer class="footer text-center text-muted mt-5">
+        Made with ♥ by <a href="https://mobilitydata.org/">MobilityData</a>
+    </footer>
+
+    <script>
+        $(function () {
+            $(".accordion tr.notice").on("click", function () {
+                $(this).toggleClass("open").next(".description").toggleClass("open")
+            })
+        });
+    </script>
+
+
+
+<div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div id="extension-begak"></div></body></html>
